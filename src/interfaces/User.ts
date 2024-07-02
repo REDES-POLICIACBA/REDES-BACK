@@ -7,4 +7,7 @@ export default interface UserInterface {
   isOnline: boolean
   dateBirth: Date
   timestamps: Date
+  photo: string
+  isVerified: boolean
+  verifiedCode: string
 }

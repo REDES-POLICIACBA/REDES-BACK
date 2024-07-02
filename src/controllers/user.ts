@@ -4,6 +4,7 @@ import type { Request, Response } from 'express'
 import type UserInterface from '../interfaces/User'
 import { response } from '../res/Response'
 import type CustomError from '../interfaces/CustomError'
+
 const services = new UserServices(User as unknown as UserInterface)
 
 export const userController = {
