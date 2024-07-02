@@ -1,10 +1,11 @@
 import crypto from 'node:crypto'
 import bcryptjs from 'bcryptjs'
 import type UserInterface from '../interfaces/User'
+import type { Model } from 'mongoose'
 
 class UserServices {
-  UserModel: UserInterface
-  constructor(UserModel: UserInterface) {
+  public UserModel: Model<UserInterface>
+  constructor(UserModel: Model<UserInterface>) {
     this.UserModel = UserModel
   }
   async createUser(user: UserInterface) {
@@ -14,21 +15,24 @@ class UserServices {
     user.password = bcryptjs.hashSync(user.password, 10)
     user.verifiedCode = crypto.randomBytes(20).toString('hex')
     try {
-      //@ts-ignore
       return await this.UserModel.create(user)
     } catch (error) {
       throw new Error(`Ha ocurrido un error al crear el usuario, ${error}`)
     }
   }
-
-  /* async updateUser() {
+  async updateUser(user: UserInterface) {
     try {
-
+      const userUpdate = await this.UserModel.findOneAndUpdate(
+        { email: user.email },
+        user,
+        { new: true },
+      )
+      return userUpdate
     } catch (error) {
-
+      throw new Error(`Ha ocurrido un error al actualizar el usuario, ${error}`)
     }
   }
-  async getUsers() { } */
+  /* async getUsers() { } */
 }
 
 export default UserServices
