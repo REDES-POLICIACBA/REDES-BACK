@@ -1,19 +1,20 @@
 import type { Response } from 'express'
+import type CustomError from '../interfaces/CustomError'
 
 export const response = {
-  isOk: (cod: number, res: Response, message: string) => {
+  isOk: (res: Response, cod: number, message: string) => {
     return res.status(cod).json({
       status: true,
       message: message,
     })
   },
-  isError: (cod: number, res: Response, message: string, path: string) => {
+  isError: (res: Response, cod: number, error: CustomError, path: string) => {
     return res.status(cod).json({
       status: false,
       message: [
         {
           path: path,
-          message: message,
+          message: error.message,
         },
       ],
     })
