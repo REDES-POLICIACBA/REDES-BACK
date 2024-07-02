@@ -25,4 +25,13 @@ export const userController = {
       response.isError(res, 500, error as CustomError, 'user')
     }
   },
+  async deleteUser(req: Request, res: Response) {
+    try {
+      const { params } = req
+      await services.deleteUser(params)
+      response.isOk(res, 200, 'Usuario eliminado correctamente')
+    } catch (error) {
+      response.isError(res, 500, error as CustomError, 'user')
+    }
+  },
 }
