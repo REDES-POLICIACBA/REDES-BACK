@@ -14,6 +14,7 @@ export const userController = {
       await services.createUser(req.body)
       response.isOk(res, 201, 'Usuario creado correctamente')
     } catch (error) {
+      console.log(error)
       response.isError(res, 500, error as CustomError, 'user')
     }
   },
