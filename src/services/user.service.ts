@@ -33,7 +33,13 @@ class UserServices {
       throw new Error(`Ha ocurrido un error al actualizar el usuario, ${error}`)
     }
   }
-  /* async getUsers() { } */
+  async deleteUser(params: ParamsDictionary) {
+    try {
+      return await this.UserModel.findOneAndDelete({ _id: params.id })
+    } catch (error) {
+      throw new Error(`Ha ocurrido un error al eliminar el usuario, ${error}`)
+    }
+  }
 }
 
 export default UserServices
