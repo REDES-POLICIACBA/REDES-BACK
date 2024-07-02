@@ -1,49 +1,46 @@
 {
-  "name": "back",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/app.ts",
-    "prepare": "husky install",
-    "format": "biome format --write ./src",
-    "lint": "npm run format && biome lint ./src --apply --no-errors-on-unmatched",
-    "build": "npm run build:ts",
-    "build:ts": "tsc"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "mongoose": "^8.4.4",
-    "multer": "^1.4.5-lts.1"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.8.3",
-    "@types/cors": "^2.8.17",
-    "@types/dotenv": "^8.2.0",
-    "@types/express": "^4.17.21",
-    "@types/mongoose": "^5.11.97",
-    "@types/multer": "^1.4.11",
-    "husky": "^9.0.11"
-  },
-  "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
-      "biome format --write --no-errors-on-unmatched",
-      "biome lint --apply --no-errors-on-unmatched",
-      "biome check --files-ignore-unknown=true",
-      "biome check --apply --no-errors-on-unmatched",
-      "biome check --apply --organize-imports-enabled=false --no-errors-on-unmatched",
-      "biome check --apply-unsafe --no-errors-on-unmatched"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run precommit",
-      "pre-push": "npm run prepush"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "description": ""
-  }
+	"name": "back",
+	"version": "1.0.0",
+	"main": "app.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "nodemon ./src/app.ts",
+		"prepare": "husky",
+		"format": "biome format --write ./src",
+		"lint": "npm run format && biome lint ./src --apply --no-errors-on-unmatched",
+		"build": "npm run build:ts",
+		"build:ts": "tsc",
+		"lint-staged": "lint-staged"
+	},
+	"dependencies": {
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.5",
+		"express": "^4.19.2",
+		"mongoose": "^8.4.4",
+		"multer": "^1.4.5-lts.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.8.3",
+		"@types/cors": "^2.8.17",
+		"@types/dotenv": "^8.2.0",
+		"@types/express": "^4.17.21",
+		"@types/mongoose": "^5.11.97",
+		"@types/multer": "^1.4.11",
+		"husky": "^9.0.11",
+		"lint-staged": "^15.2.7"
+	},
+	"lint-staged": {
+		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+			"biome format --write --no-errors-on-unmatched",
+			"biome lint --apply --no-errors-on-unmatched",
+			"biome check --files-ignore-unknown=true",
+			"biome check --apply --no-errors-on-unmatched",
+			"biome check --apply --organize-imports-enabled=false --no-errors-on-unmatched",
+			"biome check --apply-unsafe --no-errors-on-unmatched"
+		]
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": ""
+}
