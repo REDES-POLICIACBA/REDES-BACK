@@ -2,6 +2,7 @@ import crypto from 'node:crypto'
 import bcryptjs from 'bcryptjs'
 import type UserInterface from '../interfaces/User'
 import type { Model } from 'mongoose'
+import type { ParamsDictionary } from 'express-serve-static-core'
 
 class UserServices {
   public UserModel: Model<UserInterface>
@@ -20,10 +21,10 @@ class UserServices {
       throw new Error(`Ha ocurrido un error al crear el usuario, ${error}`)
     }
   }
-  async updateUser(user: UserInterface) {
+  async updateUser(user: UserInterface, params: ParamsDictionary) {
     try {
       const userUpdate = await this.UserModel.findOneAndUpdate(
-        { email: user.email },
+        { _id: params.id },
         user,
         { new: true },
       )

@@ -16,4 +16,13 @@ export const userController = {
       response.isError(res, 500, error as CustomError, 'user')
     }
   },
+  async updateUser(req: Request, res: Response) {
+    try {
+      const { body, params } = req
+      await services.updateUser(body, params)
+      response.isOk(res, 200, 'Usuario actualizado correctamente')
+    } catch (error) {
+      response.isError(res, 500, error as CustomError, 'user')
+    }
+  },
 }

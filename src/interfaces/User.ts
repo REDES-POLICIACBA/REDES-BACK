@@ -10,4 +10,5 @@ export default interface UserInterface {
   photo: string
   isVerified: boolean
   verifiedCode: string
+  _id: string
 }
