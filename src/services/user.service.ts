@@ -3,6 +3,10 @@ import bcryptjs from 'bcryptjs'
 import type UserInterface from '../interfaces/User'
 import type { Model } from 'mongoose'
 import type { ParamsDictionary } from 'express-serve-static-core'
+import EmailServices from './email.service'
+import sendEmailConfirmation from '../html/senEmailConfirmationAccount'
+
+const emailServices = new EmailServices()
 
 class UserServices {
   public UserModel: Model<UserInterface>
@@ -16,7 +20,17 @@ class UserServices {
     user.password = bcryptjs.hashSync(user.password, 10)
     user.verifiedCode = crypto.randomBytes(20).toString('hex')
     try {
-      return await this.UserModel.create(user)
+      const createUser = await this.UserModel.create(user)
+      const data = {
+        html: sendEmailConfirmation(user.name, user.verifiedCode),
+        email: user.email,
+        subject: 'Confirmación de cuenta',
+        text: 'Confirma tu cuenta',
+      }
+      emailServices.sendEmailConfirmationAccount(data).then(() => {
+        console.log(`Email enviado a ${user.email}`)
+      })
+      return createUser
     } catch (error) {
       throw new Error(`Ha ocurrido un error al crear el usuario, ${error}`)
     }

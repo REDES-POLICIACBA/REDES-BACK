@@ -1,12 +1,7 @@
-interface Props {
-  userName: string
-  verifiedCode: string
-}
-
-export default function sendEmailConfirmation({
-  userName,
-  verifiedCode,
-}: Props) {
+export default function sendEmailConfirmation(
+  userName: string,
+  verifiedCode: string,
+) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +12,7 @@ export default function sendEmailConfirmation({
     <h1>Confirmación de Cuenta</h1>
     <p>Hola ${userName},</p>
     <p>Gracias por registrarte en nuestro sitio. Haz clic en el siguiente enlace para confirmar tu cuenta:</p>
-    <a href="${verifiedCode}">Confirmar cuenta</a>
+    <a href="">${verifiedCode}</a>
     <p>¡Gracias!</p>
 </body>
 </html>`

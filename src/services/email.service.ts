@@ -21,7 +21,6 @@ class EmailServices {
     const transporter = createTransport({
       service: 'gmail',
       auth: {
-        /* aca faltan DECLARAS LAS VARIABLES DE ENTORNO */
         user: process.env.USEREMAIL,
         pass: process.env.USERMAILPASSWORD,
       },
