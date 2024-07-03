@@ -13,6 +13,7 @@ class UserServices {
   constructor(UserModel: Model<UserInterface>) {
     this.UserModel = UserModel
   }
+
   async createUser(user: UserInterface) {
     user.role = 0
     user.photo =
@@ -22,7 +23,7 @@ class UserServices {
     try {
       const createUser = await this.UserModel.create(user)
       const data = {
-        html: sendEmailConfirmation(user.name, user.verifiedCode),
+        html: sendEmailConfirmation(user.name),
         email: user.email,
         subject: 'Confirmación de cuenta',
         text: 'Confirma tu cuenta',
@@ -35,6 +36,7 @@ class UserServices {
       throw new Error(`Ha ocurrido un error al crear el usuario, ${error}`)
     }
   }
+
   async updateUser(user: UserInterface, params: ParamsDictionary) {
     try {
       const userUpdate = await this.UserModel.findOneAndUpdate(
@@ -52,6 +54,21 @@ class UserServices {
       return await this.UserModel.findOneAndDelete({ _id: params.id })
     } catch (error) {
       throw new Error(`Ha ocurrido un error al eliminar el usuario, ${error}`)
+    }
+  }
+
+  async changePasswordUser(user: UserInterface) {
+    const { email, password } = user
+    try {
+      const newHashPass = bcryptjs.hashSync(password, 10)
+      const userFind = await this.UserModel.findOneAndUpdate(
+        { email: email },
+        { password: newHashPass },
+        { new: true },
+      )
+      return userFind
+    } catch (error) {
+      throw new Error(`Ha ocurrido un error al cambiar la contraseña, ${error}`)
     }
   }
 }
