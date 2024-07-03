@@ -2,25 +2,11 @@ import type { NextFunction, Request, Response } from 'express'
 import User from '../models/user'
 import type { Types } from 'mongoose'
 
-interface CustomRequest extends Request {
-  user: {
-    id: Types.ObjectId
-    email: string
-    photo: string
-    password: string
-    role: number
-    isVerified: boolean
-  }
-}
-
-async function accountExist(
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction,
-) {
+async function accountExist(req: Request, res: Response, next: NextFunction) {
   try {
     const user = await User.findOne({ email: req.body.email })
     if (user) {
+      // @ts-ignore
       req.user = {
         id: user._id,
         email: user.email,

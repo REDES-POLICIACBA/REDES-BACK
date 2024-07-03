@@ -1,13 +1,8 @@
 import bcryptjs from 'bcryptjs'
 import type { NextFunction, Request, Response } from 'express'
 
-interface CustomRequest extends Request {
-  user: {
-    password: string
-  }
-}
-
-function passwordIsOk(req: CustomRequest, res: Response, next: NextFunction) {
+function passwordIsOk(req: Request, res: Response, next: NextFunction) {
+  // @ts-ignore
   const dbPass = req.user.password
   const formPass = req.body.password
 

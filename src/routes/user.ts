@@ -1,10 +1,12 @@
 import { Router } from 'express'
 import { userController } from '../controllers/user'
+import accountExist from '../middlewares/accountExist'
+import passwordIsOk from '../middlewares/passIsOk'
 const router = Router()
 
 router.post('/', userController.createUser)
 router.put('/:id', userController.updateUser)
 router.delete('/:id', userController.deleteUser)
 router.post('/recoverypassword', userController.recoveryPassword)
-router.post('/signin', userController.signIn)
+router.post('/signin', accountExist, passwordIsOk, userController.signIn)
 export default router
