@@ -42,4 +42,12 @@ export const userController = {
       response.isError(res, 500, error as CustomError, 'user')
     }
   },
+  async signIn(req: Request, res: Response) {
+    try {
+      const user = await services.signIn(req.body)
+      response.isOk(res, 200, 'Usuario logueado correctamente', user)
+    } catch (error) {
+      response.isError(res, 500, error as CustomError, 'user')
+    }
+  },
 }

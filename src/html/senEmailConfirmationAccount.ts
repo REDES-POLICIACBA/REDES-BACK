@@ -61,7 +61,7 @@ export default function sendEmailConfirmation(userName: string) {
     <div class="container">
         <h1>Confirmación de Creación de Cuenta</h1>
         <p>Hola ${userName.toUpperCase()},</p>
-        <p>Gracias por registrarte en nuestra aplicación. Para utilizar deberás ponerte en contacto con el administrador del sitio.</p>
+        <p>Gracias por registrarte en nuestra aplicación. Para utilizarla deberás ponerte en contacto con el administrador del sitio.</p>
         <div class="button-container">
             <a href="https://wa.me/5493513581646?text=Hola%20Elias,%20ya%20soy%20usuario%20en%20tu%20aplicación%20espero%20el%20alta%20muchas%20gracias.">Dar aviso al administrador</a>
         </div>

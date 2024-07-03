@@ -1,5 +1,6 @@
 import crypto from 'node:crypto'
 import bcryptjs from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 import type UserInterface from '../interfaces/User'
 import type { Model } from 'mongoose'
 import type { ParamsDictionary } from 'express-serve-static-core'
@@ -38,6 +39,34 @@ class UserServices {
     }
   }
 
+  async signIn(user: UserInterface) {
+    const { email } = user
+    const SECRET = <string>process.env.SECRET
+    try {
+      const userFind = await this.UserModel.findOneAndUpdate(
+        { email },
+        { isOnline: true },
+        { new: true },
+      )
+      if (userFind !== null) {
+        const token = jwt.sign({ id: userFind._id }, SECRET, {
+          expiresIn: '1h',
+        })
+        return {
+          token,
+          user: {
+            name: userFind.name,
+            email: userFind.email,
+            role: userFind.role,
+            photo: userFind.photo,
+          },
+        }
+      }
+    } catch (error) {
+      throw new Error(`Ha ocurrido un error al iniciar sesión, ${error}`)
+    }
+  }
+
   async updateUser(user: UserInterface, params: ParamsDictionary) {
     try {
       const userUpdate = await this.UserModel.findOneAndUpdate(
@@ -50,6 +79,7 @@ class UserServices {
       throw new Error(`Ha ocurrido un error al actualizar el usuario, ${error}`)
     }
   }
+
   async deleteUser(params: ParamsDictionary) {
     try {
       return await this.UserModel.findOneAndDelete({ _id: params.id })
@@ -72,6 +102,7 @@ class UserServices {
       throw new Error(`Ha ocurrido un error al cambiar la contraseña, ${error}`)
     }
   }
+
   async recoveryPassword(user: UserInterface) {
     const { email, name } = user
     try {
