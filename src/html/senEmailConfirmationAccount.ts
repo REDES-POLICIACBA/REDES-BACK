@@ -1,7 +1,12 @@
-export default function sendEmailConfirmation(
-  userName: string,
-  verifiedCode: string,
-) {
+interface Props {
+  userName: string
+  verifiedCode: string
+}
+
+export default function sendEmailConfirmation({
+  userName,
+  verifiedCode,
+}: Props) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>

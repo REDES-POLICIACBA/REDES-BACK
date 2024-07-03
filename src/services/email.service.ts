@@ -1,18 +1,21 @@
 import { createTransport } from 'nodemailer'
-import crypto from 'node:crypto'
-import sendEmailConfirmation from '../html/senEmailConfirmationAccount'
+
+interface Props {
+  html: string
+  email: string
+  subject: string
+  text: string
+}
 
 class EmailServices {
-  async sendEmailConfirmationAccount(
-    email: string,
-    verifiedCode: string,
-  ): Promise<void> {
+  async sendEmailConfirmationAccount(data: Props) {
+    const { html, email, subject, text } = data
     const message = {
       from: process.env.USEREMAIL,
       to: email,
-      subject: 'Recuperar contraseña',
-      text: 'Porfavor copía el código que te hemos enviado.',
-      html: sendEmailConfirmation(email, verifiedCode),
+      subject: subject,
+      text: text,
+      html: html,
     }
 
     const transporter = createTransport({
@@ -32,7 +35,5 @@ class EmailServices {
       }
     })
   }
-  async sendPartesdeTrabajo() {}
-  async sendResetPassword() {}
 }
 export default EmailServices
