@@ -34,4 +34,12 @@ export const userController = {
       response.isError(res, 500, error as CustomError, 'user')
     }
   },
+  async recoveryPassword(req: Request, res: Response) {
+    try {
+      await services.recoveryPassword(req.body)
+      response.isOk(res, 200, 'Correo enviado correctamente')
+    } catch (error) {
+      response.isError(res, 500, error as CustomError, 'user')
+    }
+  },
 }

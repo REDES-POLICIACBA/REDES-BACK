@@ -3,12 +3,13 @@ import { createTransport } from 'nodemailer'
 interface Props {
   html: string
   email: string
-  subject: string
-  text: string
+  subject?: string
+  text?: string
+  username?: string
 }
 
 class EmailServices {
-  async sendEmailConfirmationAccount(data: Props) {
+  async sendEmail(data: Props) {
     const { html, email, subject, text } = data
     const message = {
       from: process.env.USEREMAIL,

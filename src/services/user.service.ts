@@ -5,6 +5,7 @@ import type { Model } from 'mongoose'
 import type { ParamsDictionary } from 'express-serve-static-core'
 import EmailServices from './email.service'
 import sendEmailConfirmation from '../html/senEmailConfirmationAccount'
+import sendResetPassword from '../html/sendResetPassword'
 
 const emailServices = new EmailServices()
 
@@ -28,7 +29,7 @@ class UserServices {
         subject: 'Confirmación de cuenta',
         text: 'Confirma tu cuenta',
       }
-      emailServices.sendEmailConfirmationAccount(data).then(() => {
+      emailServices.sendEmail(data).then(() => {
         console.log(`Email enviado a ${user.email}`)
       })
       return createUser
@@ -69,6 +70,34 @@ class UserServices {
       return userFind
     } catch (error) {
       throw new Error(`Ha ocurrido un error al cambiar la contraseña, ${error}`)
+    }
+  }
+  async recoveryPassword(user: UserInterface) {
+    const { email, name } = user
+    try {
+      const userFind = await this.UserModel.findOne({ email: email })
+      if (!userFind) {
+        throw new Error('Usuario no encontrado en la base de datos')
+      }
+      const newVerifyCode = crypto.randomBytes(20).toString('hex')
+      userFind.verifiedCode = newVerifyCode
+      await userFind.save()
+      const data = {
+        html: sendResetPassword(newVerifyCode, user.name),
+        email: userFind.email,
+        subject: 'Recuperación de contraseña',
+        text: 'Recupera tu contraseña',
+        username: name,
+      }
+      emailServices.sendEmail(data).then(() => {
+        console.log(
+          `Email de recuperación de clave enviado a ${userFind.email}`,
+        )
+      })
+    } catch (error) {
+      throw new Error(
+        `Ha ocurrido un error al recuperar la contraseña, ${error}`,
+      )
     }
   }
 }
