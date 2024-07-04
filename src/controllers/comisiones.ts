@@ -28,5 +28,24 @@ const comisionesController = {
       response.isError(res, 500, error as CustomError, 'comision')
     }
   },
+
+  async deleteComision(req: Request, res: Response) {
+    try {
+      await services.delete(req.params)
+      response.isOk(res, 200, 'Comisión eliminada correctamente')
+    } catch (error) {
+      response.isError(res, 500, error as CustomError, 'comision')
+    }
+  },
+  async getAllComisiones(_req: Request, res: Response) {
+    try {
+      const comisiones = await services.getAll()
+      response.isOk(res, 200, 'Comisiones obtenidas correctamente', {
+        comisiones,
+      })
+    } catch (error) {
+      response.isError(res, 500, error as CustomError, 'comision')
+    }
+  },
 }
 export default comisionesController

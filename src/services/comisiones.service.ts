@@ -31,5 +31,25 @@ class ComisionesService {
       )
     }
   }
+  async delete(params: ParamsDictionary) {
+    try {
+      await this.ComisionesModel.findByIdAndDelete({ _id: params.id })
+    } catch (error) {
+      throw new Error(
+        `Ha ocurido un error al eliminar la comisión, intente nuevamente, ${error}`,
+      )
+    }
+  }
+
+  async getAll() {
+    try {
+      const comisiones = await this.ComisionesModel.find()
+      return comisiones
+    } catch (error) {
+      throw new Error(
+        `Ha ocurrido un error al obtener las comisiones, intente nuevamente, ${error}`,
+      )
+    }
+  }
 }
 export default ComisionesService
