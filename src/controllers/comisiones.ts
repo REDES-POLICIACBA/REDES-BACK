@@ -16,5 +16,17 @@ const comisionesController = {
       response.isError(res, 500, error as CustomError, 'comision')
     }
   },
+
+  async updateComision(req: Request, res: Response) {
+    try {
+      //@ts-ignore
+      const comision = await services.update(req.body, req.params)
+      response.isOk(res, 200, 'Comisión actualizada correctamente', {
+        comision,
+      })
+    } catch (error) {
+      response.isError(res, 500, error as CustomError, 'comision')
+    }
+  },
 }
 export default comisionesController

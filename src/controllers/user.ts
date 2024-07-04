@@ -19,8 +19,8 @@ export const userController = {
   async updateUser(req: Request, res: Response) {
     try {
       const { body, params } = req
-      await services.updateUser(body, params)
-      response.isOk(res, 200, 'Usuario actualizado correctamente')
+      const user = await services.updateUser(body, params)
+      response.isOk(res, 200, 'Usuario actualizado correctamente', { user })
     } catch (error) {
       response.isError(res, 500, error as CustomError, 'user')
     }

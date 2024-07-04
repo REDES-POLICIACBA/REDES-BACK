@@ -8,4 +8,5 @@ export default interface ComisionesInterface {
   schedule: string
   timeJob: number
   timeJourney: number
+  _id: string
 }
