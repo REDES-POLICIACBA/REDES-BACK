@@ -50,4 +50,17 @@ export const userController = {
       response.isError(res, 500, error as CustomError, 'user')
     }
   },
+  async signInToken(req: Request, res: Response) {
+    try {
+      //@ts-ignore
+      const resp = await services.signInToken(req.user)
+      const data = {
+        token: resp.token,
+        user: resp.user,
+      }
+      response.isOk(res, 200, 'Token generado correctamente', data)
+    } catch (error) {
+      response.isError(res, 500, error as CustomError, 'user')
+    }
+  },
 }

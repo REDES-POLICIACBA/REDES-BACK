@@ -67,6 +67,22 @@ class UserServices {
     }
   }
 
+  async signInToken(user: UserInterface) {
+    try {
+      console.log(user)
+      const token = jwt.sign({ id: user._id }, <string>process.env.SECRET, {
+        expiresIn: 60 * 60 * 2,
+      })
+      console.log(token)
+      return {
+        token,
+        user,
+      }
+    } catch (error) {
+      throw new Error(`No se ha podido decodificar el token${error}`)
+    }
+  }
+
   async updateUser(user: UserInterface, params: ParamsDictionary) {
     try {
       const userUpdate = await this.UserModel.findOneAndUpdate(

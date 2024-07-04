@@ -10,12 +10,15 @@ passport.use(
     },
     async (jwtPayload, done) => {
       try {
+        console.log('pase por el middleware')
         const user = await User.findOne({ _id: jwtPayload.id as string })
         if (user) {
           return done(null, user)
         }
+        console.log('no encontre el usuario')
         return done(null, false)
       } catch (error) {
+        console.log(error)
         return done(error, false)
       }
     },
