@@ -27,8 +27,7 @@
 			"bracketSameLine": false,
 			"bracketSpacing": true,
 			"jsxQuoteStyle": "double",
-			"quoteProperties": "asNeeded",
-			"trailingComma": "es5"
+			"quoteProperties": "asNeeded"
 		}
 	},
 	"formatter": {
