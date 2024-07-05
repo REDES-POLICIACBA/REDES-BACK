@@ -35,7 +35,6 @@ class EstadisticaService {
         totalHorasViaje += comision.timeJourney
       }
     }
-
     return {
       mes,
       año,
@@ -58,7 +57,6 @@ class EstadisticaService {
         totalHorasViaje += comision.timeJourney
       }
     }
-
     return {
       totalHorasTrabajo,
       totalHorasViaje,
