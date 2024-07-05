@@ -32,6 +32,16 @@ class DependenciaService {
       )
     }
   }
+  async getAllDependencias() {
+    try {
+      const dependencias = await this.DependenciaModel.find()
+      return dependencias
+    } catch (error) {
+      throw new Error(
+        `Ha ocurrido un error al intentar obtener las dependencias: ${error}`,
+      )
+    }
+  }
 }
 
 export default DependenciaService
