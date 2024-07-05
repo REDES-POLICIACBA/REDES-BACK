@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
   firewall: { type: String, required: true },
   ipInside: { type: String, required: true },
   ipOutside: { type: String, required: true },
-  referencia: { type: String, required: true },
+  referencia: { type: String },
   type: { type: String, enum: ['capital', 'interior'], required: true },
 })
 

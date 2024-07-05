@@ -12,6 +12,6 @@ export default interface Dependencia {
   firewall: string
   ipInside: string
   ipOutside: string
-  referencia: string
+  referencia?: string | null
   type: 'capital' | 'interior'
 }
