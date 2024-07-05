@@ -1,13 +1,17 @@
 export default interface Dependencia {
   name: string
   address: string
-  coordinates: {
-    latitude: number
-    longitude: number
-  }
+  coordinates?:
+    | {
+        latitude: string
+        longitude: string
+      }
+    | null
+    | undefined
   linkType: string
   firewall: string
   ipInside: string
   ipOutside: string
   referencia: string
+  type: 'capital' | 'interior'
 }

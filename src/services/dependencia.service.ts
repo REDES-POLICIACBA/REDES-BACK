@@ -42,6 +42,11 @@ class DependenciaService {
       )
     }
   }
+
+  /* ACA VAMOS  A NECESITAR QUE LOS FILTROS SEAN DINAMICOS<>
+  QUE LOS FILTROS PUEDAN FILTRAR POR TIPO <INTERIOR O CAPITAL>
+  
+  */
 }
 
 export default DependenciaService
