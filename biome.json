@@ -20,14 +20,15 @@
 		"formatter": {
 			"semicolons": "asNeeded",
 			"quoteStyle": "single",
-			"indentWidth": 2,
+			"indentWidth": 4,
 			"indentStyle": "space",
 			"lineWidth": 80,
 			"arrowParentheses": "always",
 			"bracketSameLine": false,
 			"bracketSpacing": true,
 			"jsxQuoteStyle": "double",
-			"quoteProperties": "asNeeded"
+			"quoteProperties": "asNeeded",
+			"trailingComma": "es5"
 		}
 	},
 	"formatter": {
