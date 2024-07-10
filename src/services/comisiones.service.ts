@@ -15,8 +15,8 @@ class ComisionesService {
             'f-C8F6ObR5y3pKVwHnIZ_h:APA91bGO2mrPRIF5C02XJdn_7dHJ1CzSBkhnrctjj_uS7V_WOZwjGylT9hqaEABsrxjF0BMe12pu2uUjVV7luzYx_P4sVIE2v8kxv3lpm7ZYiQycPSW_2x_6NKVXIP8coJ5sjyIqc3RM'
         servicesExternos.notificationComisionUser(
             dataToken,
-            'Nueva comisión',
-            'Se ha creado una nueva comisión',
+            'Redes.InFo',
+            'Has sido designado para una nueva comisión, mañana a las 07:00hs deberas viajar al Totoral. Toda la información se encuentra en la app',
         )
         try {
             const newComision = await this.ComisionesModel.create(data)
