@@ -9,4 +9,6 @@ export default interface ComisionesInterface {
     timeJob: number
     timeJourney: number
     _id: string
+    users: Array<Types.ObjectId>
+    text: string
 }
