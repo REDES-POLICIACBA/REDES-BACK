@@ -73,7 +73,6 @@ class ComisionesService {
                 const userExists = comisionDB.groupJob
                     .map((comision) => comision.toString())
                     .includes(comision.groupJob.toString())
-
                 if (userExists) {
                     throw new Error('El usuario ya tiene asignada la comisión')
                 }

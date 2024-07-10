@@ -3,10 +3,10 @@ import { response } from '../res/Response'
 import NotificationServices from '../services/notification.service'
 import type CustomError from '../interfaces/CustomError'
 
-const service = new NotificationServices()
+/* const service = new NotificationServices() */
 
 const notificationController = {
-  async notificationComision(_req: Request, res: Response) {
+    /* async notificationComision(_req: Request, res: Response) {
     try {
       await service.sendNotification(
         'token',
@@ -17,7 +17,7 @@ const notificationController = {
     } catch (error) {
       response.isError(res, 500, error as CustomError, 'notification')
     }
-  },
+  }, */
 }
 
 export default notificationController
