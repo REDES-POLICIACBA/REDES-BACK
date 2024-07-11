@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 
 const schema = new mongoose.Schema(
     {
@@ -12,6 +12,7 @@ const schema = new mongoose.Schema(
         dateBirth: { type: Date },
         isVerified: { type: Boolean, default: false },
         verifiedCode: { type: String },
+        notificaciones: { type: Types.ObjectId, ref: 'notificaciones' },
         tokenFCM: { type: String },
     },
     { timestamps: true },
