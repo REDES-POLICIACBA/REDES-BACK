@@ -12,7 +12,7 @@ const validType = ['instalacion', 'reparacion', 'mantenimiento', 'otro']
 const schema = new mongoose.Schema(
     {
         name: { type: String, required: true },
-        date: { type: Date, required: true },
+        date: { type: Date, required: false },
         process: { type: String, enum: validOption, default: 'no asignada' },
         type: { type: String, enum: validType, required: true },
         groupJob: [{ type: Types.ObjectId, ref: 'users', required: false }],

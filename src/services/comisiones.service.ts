@@ -2,6 +2,7 @@ import type ComisionesInterface from '../interfaces/Comisiones'
 import type { ParamsDictionary } from 'express-serve-static-core'
 import type { Model } from 'mongoose'
 import NotificationServices from './notification.service'
+import User from '../models/user'
 
 const servicesExternos = new NotificationServices()
 
@@ -11,15 +12,21 @@ class ComisionesService {
         this.ComisionesModel = ComisionesModel
     }
     async create(data: ComisionesInterface) {
-        const dataToken =
-            'f-C8F6ObR5y3pKVwHnIZ_h:APA91bGO2mrPRIF5C02XJdn_7dHJ1CzSBkhnrctjj_uS7V_WOZwjGylT9hqaEABsrxjF0BMe12pu2uUjVV7luzYx_P4sVIE2v8kxv3lpm7ZYiQycPSW_2x_6NKVXIP8coJ5sjyIqc3RM'
-        servicesExternos.notificationComisionUser(
-            dataToken,
-            'Redes.InFo',
-            'Has sido designado para una nueva comisión, mañana a las 07:00hs deberas viajar al Totoral. Toda la información se encuentra en la app',
-        )
+        const { groupJob, description } = data
         try {
             const newComision = await this.ComisionesModel.create(data)
+            const users = await User.find({ _id: { $in: groupJob } }).select(
+                'tokenFCM',
+            )
+            console.log(users)
+            const fcmTokens = users.map((user) => user.tokenFCM)
+
+            servicesExternos.notificationComisionUser(
+                //@ts-ignore
+                fcmTokens,
+                'Redes.InFo',
+                description,
+            )
             return newComision
         } catch (error) {
             throw new Error(

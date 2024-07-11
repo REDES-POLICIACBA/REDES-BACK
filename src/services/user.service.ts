@@ -42,12 +42,12 @@ class UserServices {
     }
 
     async signIn(user: UserInterface) {
-        const { email } = user
+        const { email, tokenFCM } = user
         const SECRET = <string>process.env.SECRET
         try {
             const userFind = await this.UserModel.findOneAndUpdate(
                 { email },
-                { isOnline: true },
+                { isOnline: true, tokenFCM },
                 { new: true },
             )
             if (userFind !== null) {
@@ -61,6 +61,7 @@ class UserServices {
                         email: userFind.email,
                         role: userFind.role,
                         photo: userFind.photo,
+                        id: userFind._id,
                     },
                 }
             }

@@ -9,4 +9,5 @@ export default interface ComisionesInterface {
     timeJob: number
     timeJourney: number
     _id: string
+    description?: string
 }
