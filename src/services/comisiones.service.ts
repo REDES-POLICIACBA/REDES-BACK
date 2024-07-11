@@ -3,8 +3,10 @@ import type { ParamsDictionary } from 'express-serve-static-core'
 import type { Model } from 'mongoose'
 import NotificationServices from './notification.service'
 import User from '../models/user'
+import Notificaciones from '../models/notificaciones'
 
-const servicesExternos = new NotificationServices()
+//@ts-ignore
+const servicesExternos = new NotificationServices(Notificaciones, User)
 
 class ComisionesService {
     public ComisionesModel: Model<ComisionesInterface>
@@ -27,6 +29,31 @@ class ComisionesService {
                 'Redes.InFo',
                 description,
             )
+
+            const newNotification = {
+                title: 'Redes.InFo',
+                description: description ?? '',
+                isRead: false,
+                createdAt: new Date(),
+            }
+            const createNotification =
+                await servicesExternos.createNotification(newNotification)
+            //@ts-ignore
+            const notificationId = createNotification._id
+            console.log(notificationId)
+            const updateUserPromises = users.map(async (user) => {
+                if (!user.notification) {
+                    //@ts-ignore
+                    user.notification = []
+                }
+                //@ts-ignore
+                user.notification.push(notificationId)
+                await user.save()
+            })
+
+            // Esperar a que todas las actualizaciones se completen
+            await Promise.all(updateUserPromises)
+
             return newComision
         } catch (error) {
             throw new Error(

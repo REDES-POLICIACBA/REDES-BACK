@@ -1,3 +1,5 @@
+import type { Types } from 'mongoose'
+
 export default interface UserInterface {
     name: string
     email: string
@@ -12,4 +14,5 @@ export default interface UserInterface {
     verifiedCode: string
     _id: string
     tokenFCM: string
+    notification: Array<Types.ObjectId>
 }

@@ -49,7 +49,8 @@ class UserServices {
                 { email },
                 { isOnline: true, tokenFCM },
                 { new: true },
-            )
+            ).populate('notification', '-updatedAt -__v')
+
             if (userFind !== null) {
                 const token = jwt.sign({ id: userFind._id }, SECRET, {
                     expiresIn: '1h',
@@ -62,6 +63,7 @@ class UserServices {
                         role: userFind.role,
                         photo: userFind.photo,
                         id: userFind._id,
+                        notifications: userFind.notification,
                     },
                 }
             }
