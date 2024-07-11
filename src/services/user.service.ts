@@ -50,7 +50,6 @@ class UserServices {
                 { isOnline: true, tokenFCM },
                 { new: true },
             ).populate('notification', '-updatedAt -__v')
-
             if (userFind !== null) {
                 const token = jwt.sign({ id: userFind._id }, SECRET, {
                     expiresIn: '1h',
@@ -123,13 +122,11 @@ class UserServices {
             )
         }
     }
-
-    async changePasswordUser(user: UserInterface) {
-        const { email, password } = user
+    async changePassword(user: UserInterface, password: string) {
         try {
             const newHashPass = bcryptjs.hashSync(password, 10)
             const userFind = await this.UserModel.findOneAndUpdate(
-                { email: email },
+                { email: user.email },
                 { password: newHashPass },
                 { new: true },
             )

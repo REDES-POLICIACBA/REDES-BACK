@@ -1,3 +1,4 @@
+import type { Types } from 'mongoose'
 import admin from '../firebase/admin'
 import type Notificaciones from '../interfaces/Notificaciones'
 import type { Model } from 'mongoose'
@@ -34,6 +35,7 @@ class NotificationServices {
 
             console.log('Successfully sent messages:', response)
         } catch (error) {
+            console.log(error)
             return error
         }
     }
