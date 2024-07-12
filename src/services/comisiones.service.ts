@@ -22,14 +22,12 @@ class ComisionesService {
             )
             console.log(users)
             const fcmTokens = users.map((user) => user.tokenFCM)
-
             servicesExternos.notificationComisionUser(
                 //@ts-ignore
                 fcmTokens,
                 'Redes.InFo',
                 description,
             )
-
             const newNotification = {
                 title: 'Redes.InFo',
                 description: description ?? '',
@@ -50,10 +48,7 @@ class ComisionesService {
                 user.notification.push(notificationId)
                 await user.save()
             })
-
-            // Esperar a que todas las actualizaciones se completen
             await Promise.all(updateUserPromises)
-
             return newComision
         } catch (error) {
             throw new Error(
