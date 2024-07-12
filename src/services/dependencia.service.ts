@@ -9,7 +9,6 @@ class DependenciaService {
     constructor(DependenciaModel: Model<Dependencia>) {
         this.DependenciaModel = DependenciaModel
     }
-
     async create(dependenciaData: Dependencia) {
         try {
             const dependencia =
@@ -38,8 +37,6 @@ class DependenciaService {
     }
     async getAllDependencias(params: ParsedQs) {
         const { filter } = ParseParamsToObject(params)
-        /* ESTO MANDARIA HACIA EL FRONT TODA LA DATA, O LA MANDARIA PARCIALMENTE ATRAVES DE LAS QUERYS PARAMS, PAGINACION NO HARIA FALTA YA QUE NECESITMAS VER TODAS LAS DEPENDENCIAS EN LOS MARCADORES */
-        /* EL FRONT SE ENCARGARIA DE FILTRAR LA BUSQUEDA POR ID<INSIDE>, IP<OUTSIDE> Y POR NOMBRE. */
         try {
             const dependencias = await this.DependenciaModel.find(filter)
             return dependencias
@@ -49,9 +46,6 @@ class DependenciaService {
             )
         }
     }
-    /* ACA VAMOS  A NECESITAR QUE LOS FILTROS SEAN DINAMICOS<>
-  QUE LOS FIsLTROS PUEDAN FILTRAR POR TIPO <INTERIOR O CAPITAL>
-  */
 }
 
 export default DependenciaService

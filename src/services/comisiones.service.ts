@@ -4,6 +4,8 @@ import type { Model } from 'mongoose'
 import NotificationServices from './notification.service'
 import User from '../models/user'
 import Notificaciones from '../models/notificaciones'
+import type { ParsedQs } from 'qs'
+import { ParseParamsToObject } from '../func/ObjectKeys'
 
 //@ts-ignore
 const servicesExternos = new NotificationServices(Notificaciones, User)
@@ -80,19 +82,10 @@ class ComisionesService {
         }
     }
 
-    /* 
-  ACA VAMOS A NECESITAR QUERYPARAMS PARA TRAER LA DATA EN PROPORCIONES PEQUEÑAS;
-  PODRIAMOS TENER DOS METODOS, UNO PARA TRAER TODAS LAS COMISIONES Y OTRO PARA TRAERLAS DE A POCO
-
-  CUANDO TRAIGA TODAS LAS COMISIONES, DEBERIA TRAER UNA CANTIDAD LIMITADA DE COMISIONES, Y UN BOTON PARA TRAER MAS COMISIONES O CUANDO LLEGUE AL FINAL DEL SCROLL, EL SCROLL SE DEBERIA ACTIVAR Y TRAER MAS COMISIONES
-
-  POR OTRA PARTE EN EL FRONT CUANDO EL USUARIO SCROLLE DOS VECES LA DIMENSION DE SU PANTALLA, DEBERIA APARECER UN BOTON CON FIXED CON UN LUPA PARA QUE EL USUARIO PUEDA BUSCAR UNA COMISION EN ESPECIFICO
-
-  SI LA MANTIENE APRETADA A LA LUPA POR MAS DE UN TIEMPO DETERMINADO EL USUARIO DEBERIA VOLVER AL COMIENZO DE LA LISTA EN DONDE ENCONTRARIA LOS DEMAS FILTROS PARA BUSCAR LA COMISION EN ESPECIFICO(DATAPICKER, SELECTS, ETC)
-*/
-    async getAll() {
+    async getAll(params?: ParsedQs) {
+        const { filter } = ParseParamsToObject(params as ParsedQs)
         try {
-            const comisiones = await this.ComisionesModel.find()
+            const comisiones = await this.ComisionesModel.find(filter)
             return comisiones
         } catch (error) {
             throw new Error(
@@ -100,6 +93,7 @@ class ComisionesService {
             )
         }
     }
+
     async asignarComision(
         comision: ComisionesInterface,
         params: ParamsDictionary,

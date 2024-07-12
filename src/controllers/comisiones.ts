@@ -36,12 +36,17 @@ const comisionesController = {
             response.isError(res, 500, error as CustomError, 'comision')
         }
     },
-    async getAllComisiones(_req: Request, res: Response) {
+    async getAllComisiones(req: Request, res: Response) {
         try {
-            const comisiones = await services.getAll()
-            response.isOk(res, 200, 'Comisiones obtenidas correctamente', {
+            const params = req.query
+            const comisiones = await services.getAll(params)
+            response.isOk(
+                res,
+                200,
+                'Comisiones obtenidas correctamente',
+                {},
                 comisiones,
-            })
+            )
         } catch (error) {
             response.isError(res, 500, error as CustomError, 'comision')
         }
