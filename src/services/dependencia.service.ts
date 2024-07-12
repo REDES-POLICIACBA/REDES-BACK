@@ -2,6 +2,7 @@ import type Dependencia from '../interfaces/Dependencia'
 import type { Model } from 'mongoose'
 import type { ParamsDictionary } from 'express-serve-static-core'
 import type { ParsedQs } from 'qs'
+import { ParseParamsToObject } from '../func/ObjectKeys'
 
 class DependenciaService {
     public DependenciaModel: Model<Dependencia>
@@ -36,14 +37,9 @@ class DependenciaService {
         }
     }
     async getAllDependencias(params: ParsedQs) {
-        const querys = new URLSearchParams(params as unknown as string)
-        const type = querys.get('type')
-        //@ts-ignore
-        let filter = {}
-        if (type !== null) {
-            filter = { type }
-        }
-
+        const { filter } = ParseParamsToObject(params)
+        /* ESTO MANDARIA HACIA EL FRONT TODA LA DATA, O LA MANDARIA PARCIALMENTE ATRAVES DE LAS QUERYS PARAMS, PAGINACION NO HARIA FALTA YA QUE NECESITMAS VER TODAS LAS DEPENDENCIAS EN LOS MARCADORES */
+        /* EL FRONT SE ENCARGARIA DE FILTRAR LA BUSQUEDA POR ID<INSIDE>, IP<OUTSIDE> Y POR NOMBRE. */
         try {
             const dependencias = await this.DependenciaModel.find(filter)
             return dependencias
@@ -53,7 +49,6 @@ class DependenciaService {
             )
         }
     }
-
     /* ACA VAMOS  A NECESITAR QUE LOS FILTROS SEAN DINAMICOS<>
   QUE LOS FIsLTROS PUEDAN FILTRAR POR TIPO <INTERIOR O CAPITAL>
   */
