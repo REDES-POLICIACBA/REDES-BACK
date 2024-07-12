@@ -22,6 +22,15 @@ const dependenciaController = {
             response.isError(res, 500, error as CustomError, 'dependencia')
         }
     },
+    async getAllDependencias(req: Request, res: Response) {
+        try {
+            const params = req.query
+            const dependencias = await service.getAllDependencias(params)
+            response.isOk(res, 200, '', {}, dependencias)
+        } catch (error) {
+            response.isError(res, 500, error as CustomError, 'dependencia')
+        }
+    },
 }
 
 export default dependenciaController

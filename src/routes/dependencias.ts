@@ -5,4 +5,5 @@ const router = Router()
 
 router.post('/', dependenciaController.create)
 router.put('/:id', dependenciaController.update)
+router.get('/', dependenciaController.getAllDependencias)
 export default router
