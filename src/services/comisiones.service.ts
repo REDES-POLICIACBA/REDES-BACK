@@ -72,8 +72,7 @@ class ComisionesService {
                 servicesExternos.notificationComisionUser(
                     fcmTokens,
                     'Informe del servidor',
-                    `La comision ${comision?.name} ha cambiado de estado por el usuario ${user.email}, ahora el estado de la comisión se encuentra en 
-                    ${comision?.process}`,
+                    `La comision ${comision?.name} ha cambiado de estado por el usuario ${user.email}, ahora el estado de la comisión se encuentra ${comision?.process}`,
                 )
             }
             return comision

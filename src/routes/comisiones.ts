@@ -5,6 +5,7 @@ import { isAdmin } from '../middlewares/comision/isAdmin'
 import passport from '../middlewares/passport'
 import { isInstalador } from '../middlewares/comision/isInstalador'
 import { isApplyComision } from '../middlewares/comision/isApplyComision'
+import { isProperty } from '../middlewares/comision/isProperty'
 const router = Router()
 
 router.post(
@@ -17,6 +18,7 @@ router.post(
 router.put(
     '/:id',
     passport.authenticate('jwt', { session: false }),
+    isProperty,
     isInstalador,
     comisionesController.updateComision,
 )
@@ -55,6 +57,7 @@ router.post(
     '/desaply/:id',
     passport.authenticate('jwt', { session: false }),
     isFinish,
+    isInstalador,
     comisionesController.desAplicarComision,
 )
 
