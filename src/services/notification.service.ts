@@ -4,6 +4,7 @@ import type Notificaciones from '../interfaces/Notificaciones'
 import type { Model } from 'mongoose'
 
 import type UserInterface from '../interfaces/User'
+import type { ParamsDictionary } from 'express-serve-static-core'
 
 class NotificationServices {
     public NotificacionesModel: Model<Notificaciones>
@@ -39,7 +40,6 @@ class NotificationServices {
             return error
         }
     }
-
     async createNotification(notificacion: Notificaciones) {
         try {
             //@ts-ignore
@@ -49,6 +49,22 @@ class NotificationServices {
         } catch (error) {
             throw new Error(
                 `Ha ocurrido un error al crear la notificación, ${error}`,
+            )
+        }
+    }
+    async updateNotification(params: ParamsDictionary) {
+        try {
+            const { id } = params
+            const notification =
+                await this.NotificacionesModel.findOneAndUpdate(
+                    { _id: id },
+                    { isRead: true },
+                    { new: true },
+                )
+            return notification
+        } catch (error) {
+            throw new Error(
+                `Ha ocurrido un error al dar por leida la notificación, ${error}`,
             )
         }
     }

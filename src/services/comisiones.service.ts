@@ -20,9 +20,9 @@ class ComisionesService {
         try {
             const newComision = await this.ComisionesModel.create(data)
             const users = await User.find({ _id: { $in: groupJob } }).select(
-                'tokenFCM',
+                'tokenFCM notification',
             )
-            console.log(users)
+
             const fcmTokens = users.map((user) => user.tokenFCM)
             servicesExternos.notificationComisionUser(
                 //@ts-ignore
@@ -36,21 +36,15 @@ class ComisionesService {
                 isRead: false,
                 createdAt: new Date(),
             }
-            const createNotification =
-                await servicesExternos.createNotification(newNotification)
-            //@ts-ignore
-            const notificationId = createNotification._id
-            console.log(notificationId)
-            const updateUserPromises = users.map(async (user) => {
-                if (!user.notification) {
-                    //@ts-ignore
-                    user.notification = []
-                }
-                //@ts-ignore
-                user.notification.push(notificationId)
+
+            for (const user of users) {
+                const notification =
+                    await servicesExternos.createNotification(newNotification)
+                const notificationId = notification._id
+                user?.notification?.push(notificationId)
                 await user.save()
-            })
-            await Promise.all(updateUserPromises)
+            }
+
             return newComision
         } catch (error) {
             throw new Error(
