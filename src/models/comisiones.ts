@@ -19,6 +19,7 @@ const schema = new mongoose.Schema(
         schedule: { type: String, required: true },
         timeJob: { type: Number, default: 0 },
         timeJourney: { type: Number, default: 0 },
+        observation: { type: String, required: false },
     },
     { timestamps: true },
 )

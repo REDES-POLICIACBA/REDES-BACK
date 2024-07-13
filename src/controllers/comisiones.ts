@@ -19,7 +19,12 @@ const comisionesController = {
 
     async updateComision(req: Request, res: Response) {
         try {
-            const comision = await services.update(req.body, req.params)
+            const comision = await services.update(
+                req.body,
+                req.params,
+                //@ts-ignore
+                req.user,
+            )
             response.isOk(res, 200, 'Comisión actualizada correctamente', {
                 comision,
             })

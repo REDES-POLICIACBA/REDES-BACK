@@ -13,10 +13,35 @@ router.post(
     isAdmin,
     comisionesController.createComision,
 )
-router.put('/:id', comisionesController.updateComision)
-router.delete('/:id', comisionesController.deleteComision)
-router.get('/', comisionesController.getAllComisiones)
-router.post('/asignar/:id', comisionesController.asignarComision)
+
+router.put(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
+    isInstalador,
+    comisionesController.updateComision,
+)
+
+router.delete(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
+    isAdmin,
+    comisionesController.deleteComision,
+)
+
+router.get(
+    '/',
+    passport.authenticate('jwt', { session: false }),
+    isInstalador,
+    comisionesController.getAllComisiones,
+)
+
+router.post(
+    '/asignar/:id',
+    passport.authenticate('jwt', { session: false }),
+    isAdmin,
+    comisionesController.asignarComision,
+)
+
 router.post(
     '/aply/:id',
     passport.authenticate('jwt', { session: false }),
@@ -25,6 +50,7 @@ router.post(
     isInstalador,
     comisionesController.applyComision,
 )
+
 router.post(
     '/desaply/:id',
     passport.authenticate('jwt', { session: false }),

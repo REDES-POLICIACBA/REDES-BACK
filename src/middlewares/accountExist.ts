@@ -13,6 +13,8 @@ async function accountExist(req: Request, res: Response, next: NextFunction) {
                 password: user.password,
                 role: user.role,
                 isVerified: user.isVerified,
+                name: user.name,
+                isOnline: user.isOnline,
             }
             return next()
         }

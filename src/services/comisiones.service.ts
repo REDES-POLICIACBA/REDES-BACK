@@ -6,10 +6,13 @@ import User from '../models/user'
 import Notificaciones from '../models/notificaciones'
 import type { ParsedQs } from 'qs'
 import { ParseParamsToObject } from '../func/ObjectKeys'
+import UserServices from './user.service'
+import type { ReqUser } from '../interfaces/User'
 
 //@ts-ignore
 const servicesExternos = new NotificationServices(Notificaciones, User)
-
+//@ts-ignore
+const servicesExternoUser = new UserServices(User)
 class ComisionesService {
     public ComisionesModel: Model<ComisionesInterface>
     constructor(ComisionesModel: Model<ComisionesInterface>) {
@@ -52,13 +55,27 @@ class ComisionesService {
             )
         }
     }
-    async update(data: ComisionesInterface, params: ParamsDictionary) {
+    async update(
+        data: ComisionesInterface,
+        params: ParamsDictionary,
+        user: ReqUser,
+    ) {
         try {
             const comision = await this.ComisionesModel.findByIdAndUpdate(
                 { _id: params.id },
                 data,
                 { new: true },
             )
+            if (data.process !== 'no asignada') {
+                const admins = await servicesExternoUser.getAllAdmins()
+                const fcmTokens = admins.map((admin) => admin.tokenFCM)
+                servicesExternos.notificationComisionUser(
+                    fcmTokens,
+                    'Informe del servidor',
+                    `La comision ${comision?.name} ha cambiado de estado por el usuario ${user.email}, ahora el estado de la comisión se encuentra en 
+                    ${comision?.process}`,
+                )
+            }
             return comision
         } catch (error) {
             throw new Error(

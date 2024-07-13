@@ -65,4 +65,14 @@ export const userController = {
             response.isError(res, 500, error as CustomError, 'user')
         }
     },
+    async getAllInstaladores(_req: Request, res: Response) {
+        try {
+            const users = await services.getAllInstaladores()
+            response.isOk(res, 200, 'Instaladores recuperados correctamente', {
+                users,
+            })
+        } catch (error) {
+            response.isError(res, 500, error as CustomError, 'user')
+        }
+    },
 }

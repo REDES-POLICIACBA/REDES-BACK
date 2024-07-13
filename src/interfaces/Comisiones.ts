@@ -10,4 +10,5 @@ export default interface ComisionesInterface {
     timeJourney: number
     id: Types.ObjectId
     description?: string
+    oservervation?: string
 }

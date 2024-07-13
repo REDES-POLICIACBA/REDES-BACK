@@ -166,6 +166,30 @@ class UserServices {
             )
         }
     }
+    async getAllInstaladores() {
+        try {
+            const users = await this.UserModel.find({ role: 1 }).select(
+                '_id name email',
+            )
+            return users
+        } catch (error) {
+            throw new Error(
+                `Ha ocurrido un error al obtener los instaladores, ${error}`,
+            )
+        }
+    }
+    async getAllAdmins() {
+        try {
+            const users = await this.UserModel.find({ role: 3 }).select(
+                '_id name email tokenFCM',
+            )
+            return users
+        } catch (error) {
+            throw new Error(
+                `Ha ocurrido un error al obtener los administradores, ${error}`,
+            )
+        }
+    }
 }
 
 export default UserServices
