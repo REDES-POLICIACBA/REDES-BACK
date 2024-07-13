@@ -64,5 +64,32 @@ const comisionesController = {
             response.isError(res, 500, error as CustomError, 'comision')
         }
     },
+    async applyComision(req: Request, res: Response) {
+        try {
+            const { idUser, idComision } = req.params
+            //@ts-ignore
+            const comision = await services.aplicarComision(idUser, idComision)
+            response.isOk(res, 200, 'Comisión aplicada correctamente', {
+                comision,
+            })
+        } catch (error) {
+            response.isError(res, 500, error as CustomError, 'comision')
+        }
+    },
+    async desAplicarComision(req: Request, res: Response) {
+        try {
+            const { idUser, idComision } = req.params
+            const comisionDesaplicada = await services.desAplicarComision(
+                //@ts-ignore
+                idUser,
+                idComision,
+            )
+            response.isOk(res, 200, 'Comisión desaplicada correctamente', {
+                comisionDesaplicada,
+            })
+        } catch (error) {
+            response.isError(res, 500, error as CustomError, 'comision')
+        }
+    },
 }
 export default comisionesController

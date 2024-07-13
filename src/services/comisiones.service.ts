@@ -115,5 +115,50 @@ class ComisionesService {
             )
         }
     }
+
+    async aplicarComision(
+        paramsUser: ParamsDictionary,
+        paramsComision: ParamsDictionary,
+    ) {
+        try {
+            const comisionAplicada =
+                await this.ComisionesModel.findByIdAndUpdate(
+                    { _id: paramsComision },
+                    {
+                        $addToSet: { groupJob: paramsUser },
+                        process: 'en progreso',
+                    },
+                    { new: true },
+                )
+            return comisionAplicada
+        } catch (_error) {
+            console.log(_error)
+            throw new Error(
+                'Ha ocurrido un error al aplicar a la comisión, intenta nuevamente más tarde',
+            )
+        }
+    }
+
+    async desAplicarComision(
+        paramsUser: ParamsDictionary,
+        paramsComision: ParamsDictionary,
+    ) {
+        try {
+            const comisionDesAplicada =
+                await this.ComisionesModel.findByIdAndUpdate(
+                    { _id: paramsComision },
+                    {
+                        $pull: { groupJob: paramsUser },
+                    },
+                    { new: true },
+                )
+            return comisionDesAplicada
+        } catch (_error) {
+            console.log(_error)
+            throw new Error(
+                'Ha ocurrido un error al aplicar a la comisión, intenta nuevamente más tarde',
+            )
+        }
+    }
 }
 export default ComisionesService
