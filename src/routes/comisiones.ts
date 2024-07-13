@@ -3,7 +3,8 @@ import comisionesController from '../controllers/comisiones'
 import { isFinish } from '../middlewares/comision/isFinish'
 import { isAdmin } from '../middlewares/comision/isAdmin'
 import passport from '../middlewares/passport'
-
+import { isInstalador } from '../middlewares/comision/isInstalador'
+import { isApplyComision } from '../middlewares/comision/isApplyComision'
 const router = Router()
 
 router.post(
@@ -17,12 +18,16 @@ router.delete('/:id', comisionesController.deleteComision)
 router.get('/', comisionesController.getAllComisiones)
 router.post('/asignar/:id', comisionesController.asignarComision)
 router.post(
-    '/aply/:idUser/:idComision',
+    '/aply/:id',
+    passport.authenticate('jwt', { session: false }),
+    isApplyComision,
     isFinish,
+    isInstalador,
     comisionesController.applyComision,
 )
 router.post(
-    '/desaply/:idUser/:idComision',
+    '/desaply/:id',
+    passport.authenticate('jwt', { session: false }),
     isFinish,
     comisionesController.desAplicarComision,
 )

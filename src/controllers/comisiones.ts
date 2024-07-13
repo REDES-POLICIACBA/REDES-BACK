@@ -66,9 +66,11 @@ const comisionesController = {
     },
     async applyComision(req: Request, res: Response) {
         try {
-            const { idUser, idComision } = req.params
             //@ts-ignore
-            const comision = await services.aplicarComision(idUser, idComision)
+            const { _id } = req.user
+            const { id } = req.params
+            //@ts-ignore
+            const comision = await services.aplicarComision(_id, id)
             response.isOk(res, 200, 'Comisión aplicada correctamente', {
                 comision,
             })
@@ -78,11 +80,13 @@ const comisionesController = {
     },
     async desAplicarComision(req: Request, res: Response) {
         try {
-            const { idUser, idComision } = req.params
+            //@ts-ignore
+            const { _id } = req.user
+            const { id } = req.params
             const comisionDesaplicada = await services.desAplicarComision(
+                _id,
                 //@ts-ignore
-                idUser,
-                idComision,
+                id,
             )
             response.isOk(res, 200, 'Comisión desaplicada correctamente', {
                 comisionDesaplicada,

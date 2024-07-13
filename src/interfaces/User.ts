@@ -16,3 +16,15 @@ export default interface UserInterface {
     tokenFCM: string
     notification: Array<Types.ObjectId>
 }
+
+export interface ReqUser {
+    name: string
+    role: number
+    email: string
+    _id: string
+    tokenFCM: string
+    notification: Array<Types.ObjectId>
+    isOnline: boolean
+    photo: string
+    isVerified: boolean
+}

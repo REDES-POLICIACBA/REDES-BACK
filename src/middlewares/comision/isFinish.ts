@@ -1,14 +1,19 @@
-import type { Request, Response } from 'express'
+import type { Request, Response, NextFunction } from 'express'
 import Comisiones from '../../models/comisiones'
 
-export async function isFinish(req: Request, res: Response) {
-    const { idComision } = req.params
+export async function isFinish(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    const { id } = req.params
     try {
-        const comisionEncontrada = await Comisiones.findById(idComision)
+        const comisionEncontrada = await Comisiones.findById(id)
         if (comisionEncontrada?.process === 'terminada') {
             return res.status(400).json({
                 message: 'La comisión ya ha sido finalizada',
             })
         }
+        return next()
     } catch (_error) {}
 }
