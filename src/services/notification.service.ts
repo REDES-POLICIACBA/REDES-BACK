@@ -1,8 +1,6 @@
-import type { Types } from 'mongoose'
 import admin from '../firebase/admin'
 import type Notificaciones from '../interfaces/Notificaciones'
 import type { Model } from 'mongoose'
-
 import type UserInterface from '../interfaces/User'
 import type { ParamsDictionary } from 'express-serve-static-core'
 
@@ -17,32 +15,41 @@ class NotificationServices {
         this.NotificacionesModel = NotificacionesModel
         this.UserModel = UserModel
     }
+
     async notificationComisionUser(
         tokens: string[],
         title: string,
         body: string,
     ) {
         try {
-            const messages = tokens.map((token) => ({
+            console.log('tokens', tokens)
+            const message = {
                 notification: {
                     title: title,
                     body: body,
                 },
-                token: token,
-            }))
-            const dryRun = false
-            //@ts-ignore
-            const response = await admin.messaging().sendEach(messages, dryRun)
+                tokens: tokens,
+            }
+            const response = await admin.messaging().sendMulticast(message)
 
             console.log('Successfully sent messages:', response)
+
+            response.responses.forEach((resp, idx) => {
+                if (!resp.success) {
+                    console.error(
+                        `Error sending message to token ${tokens[idx]}:`,
+                        resp.error,
+                    )
+                }
+            })
         } catch (error) {
-            console.log(error)
-            return error
+            console.error('Error sending messages:', error)
+            throw error
         }
     }
+
     async createNotification(notificacion: Notificaciones) {
         try {
-            //@ts-ignore
             const newnotification =
                 await this.NotificacionesModel.create(notificacion)
             return newnotification
@@ -52,6 +59,7 @@ class NotificationServices {
             )
         }
     }
+
     async updateNotification(params: ParamsDictionary) {
         try {
             const { id } = params

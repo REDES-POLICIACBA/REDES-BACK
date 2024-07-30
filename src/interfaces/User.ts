@@ -12,6 +12,7 @@ export default interface UserInterface {
     photo: string
     isVerified: boolean
     verifiedCode: string
+    latestConnection: Date
     _id: string
     tokenFCM: string
     notification: Array<Types.ObjectId>

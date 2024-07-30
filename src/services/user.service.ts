@@ -47,7 +47,7 @@ class UserServices {
         try {
             const userFind = await this.UserModel.findOneAndUpdate(
                 { email },
-                { isOnline: true, tokenFCM },
+                { isOnline: true, tokenFCM, latestConnection: new Date() },
                 { new: true },
             ).populate('notification', '-updatedAt -__v')
             if (userFind !== null) {
@@ -63,6 +63,7 @@ class UserServices {
                         photo: userFind.photo,
                         id: userFind._id,
                         notifications: userFind.notification,
+                        latestConnection: userFind.latestConnection,
                     },
                 }
             }

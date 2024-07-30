@@ -1,7 +1,6 @@
 import admin from 'firebase-admin'
-import { credentialSDK } from '../config/credentialSDK'
 
-const serviceAccount = credentialSDK()
+const serviceAccount = require('./redespushnotifications-firebase-adminsdk-znk8m-17b007cf6a.json')
 
 admin.initializeApp({
     //@ts-ignore

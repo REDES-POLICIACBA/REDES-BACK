@@ -12,6 +12,7 @@ const schema = new mongoose.Schema(
         dateBirth: { type: Date },
         isVerified: { type: Boolean, default: false },
         verifiedCode: { type: String },
+        latestConnection: { type: Date },
         notification: [
             { type: Types.ObjectId, ref: 'notifications', default: [] },
         ],
