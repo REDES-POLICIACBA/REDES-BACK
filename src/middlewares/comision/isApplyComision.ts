@@ -12,7 +12,9 @@ export async function isApplyComision(
         const { _id } = <ReqUser>req.user
         const isApply = await Comisiones.findOne({ _id: id })
         //@ts-ignore
-        if (isApply?.groupJob.includes(_id)) {
+        if (
+            isApply?.groupJob.find((user) => user.toString() === _id.toString())
+        ) {
             return res.status(400).json({
                 success: false,
                 message: 'Ya has aplicado a esta comisión',

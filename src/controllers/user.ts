@@ -75,4 +75,21 @@ export const userController = {
             response.isError(res, 500, error as CustomError, 'user')
         }
     },
+    async signOut(req: Request, res: Response) {
+        try {
+            //@ts-ignore
+            await services.signOut(req.user)
+            response.isOk(res, 200, 'Usuario desconectado correctamente')
+        } catch (error) {
+            response.isError(res, 500, error as CustomError, 'user')
+        }
+    },
+    async updateFCMToken(req: Request, _res: Response) {
+        try {
+            console.log(req.body.token)
+            await services.updateFCMToken(req.params, req.body.token)
+        } catch (error) {
+            console.log(error)
+        }
+    },
 }

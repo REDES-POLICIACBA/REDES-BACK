@@ -47,7 +47,7 @@ class UserServices {
         try {
             const userFind = await this.UserModel.findOneAndUpdate(
                 { email },
-                { isOnline: true, tokenFCM, latestConnection: new Date() },
+                { isOnline: true, tokenFCM },
                 { new: true },
             ).populate('notification', '-updatedAt -__v')
             if (userFind !== null) {
@@ -188,6 +188,32 @@ class UserServices {
         } catch (error) {
             throw new Error(
                 `Ha ocurrido un error al obtener los administradores, ${error}`,
+            )
+        }
+    }
+    async signOut(user: UserInterface) {
+        try {
+            const userFind = await this.UserModel.findOneAndUpdate(
+                { email: user.email },
+                { isOnline: false, latestConnection: new Date() },
+                { new: true },
+            )
+            return userFind
+        } catch (error) {
+            throw new Error(`Ha ocurrido un error al cerrar sesión, ${error}`)
+        }
+    }
+    async updateFCMToken(params: ParamsDictionary, tokenFCM: string) {
+        try {
+            const userUpdate = await this.UserModel.findOneAndUpdate(
+                { _id: params.id },
+                { tokenFCM },
+                { new: true },
+            )
+            return userUpdate
+        } catch (error) {
+            throw new Error(
+                `Ha ocurrido un error al actualizar el usuario, ${error}`,
             )
         }
     }

@@ -25,29 +25,31 @@ class ComisionesService {
             const users = await User.find({ _id: { $in: groupJob } }).select(
                 'tokenFCM notification',
             )
+            if (users.length > 0) {
+                const fcmTokens = users.map((user) => user.tokenFCM)
+                servicesExternos.notificationComisionUser(
+                    //@ts-ignore
+                    fcmTokens,
+                    'Redes.InFo',
+                    description,
+                )
+                const newNotification = {
+                    title: 'Redes.InFo',
+                    description: description ?? '',
+                    isRead: false,
+                    createdAt: new Date(),
+                }
 
-            const fcmTokens = users.map((user) => user.tokenFCM)
-            servicesExternos.notificationComisionUser(
-                //@ts-ignore
-                fcmTokens,
-                'Redes.InFo',
-                description,
-            )
-            const newNotification = {
-                title: 'Redes.InFo',
-                description: description ?? '',
-                isRead: false,
-                createdAt: new Date(),
+                for (const user of users) {
+                    const notification =
+                        await servicesExternos.createNotification(
+                            newNotification,
+                        )
+                    const notificationId = notification._id
+                    user?.notification?.push(notificationId)
+                    await user.save()
+                }
             }
-
-            for (const user of users) {
-                const notification =
-                    await servicesExternos.createNotification(newNotification)
-                const notificationId = notification._id
-                user?.notification?.push(notificationId)
-                await user.save()
-            }
-
             return newComision
         } catch (error) {
             throw new Error(
@@ -142,7 +144,7 @@ class ComisionesService {
                     { _id: paramsComision },
                     {
                         $addToSet: { groupJob: paramsUser },
-                        process: 'en progreso',
+                        process: 'En progreso',
                     },
                     { new: true },
                 )

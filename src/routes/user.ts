@@ -30,6 +30,12 @@ router.post(
 )
 
 router.post(
+    '/signout',
+    passport.authenticate('jwt', { session: false }),
+    userController.signOut,
+)
+
+router.post(
     '/signin/token',
     passport.authenticate('jwt', { session: false }),
     userController.signInToken,
@@ -41,4 +47,7 @@ router.get(
     isAdmin,
     userController.getAllInstaladores,
 )
+
+router.put('/fcmtoken', userController.updateFCMToken)
+
 export default router

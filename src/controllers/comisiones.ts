@@ -53,6 +53,7 @@ const comisionesController = {
                 comisiones,
             )
         } catch (error) {
+            console.log(error)
             response.isError(res, 500, error as CustomError, 'comision')
         }
     },
@@ -74,6 +75,7 @@ const comisionesController = {
             //@ts-ignore
             const { _id } = req.user
             const { id } = req.params
+            console.log('id en el controlador', id)
             //@ts-ignore
             const comision = await services.aplicarComision(_id, id)
             response.isOk(res, 200, 'Comisión aplicada correctamente', {

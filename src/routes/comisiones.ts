@@ -45,7 +45,7 @@ router.post(
 )
 
 router.post(
-    '/aply/:id',
+    '/apply/:id',
     passport.authenticate('jwt', { session: false }),
     isApplyComision,
     isFinish,
