@@ -31,6 +31,7 @@ async function accountExist(req: Request, res: Response, next: NextFunction) {
             })
         }
     } catch (_error) {
+        console.log(_error, 'error en el middleware de accountExist')
         return res.status(400).json({
             success: false,
             message: [
