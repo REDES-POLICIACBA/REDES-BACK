@@ -2,7 +2,6 @@ import type { NextFunction, Request, Response } from 'express'
 import User from '../models/user'
 
 async function accountExist(req: Request, res: Response, next: NextFunction) {
-    console.log(req.body)
     try {
         const user = await User.findOne({ email: req.body.email })
         if (user) {

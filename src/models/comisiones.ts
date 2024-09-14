@@ -7,17 +7,17 @@ const validOption = [
     'Reprogramada',
     'No asignada',
 ]
-const validType = ['instalación', 'reparación', 'mantenimiento', 'otro']
+const validType = ['Instalación', 'Reparación', 'Mantenimiento', 'Otro']
 
 const schema = new mongoose.Schema(
     {
         name: { type: String, required: true },
-        date: { type: Date, required: false },
+        date: { type: Date, required: true },
         process: { type: String, enum: validOption, default: 'no asignada' },
         description: { type: String, required: true },
         type: { type: String, enum: validType, required: true },
         groupJob: [{ type: Types.ObjectId, ref: 'users', required: false }],
-        schedule: { type: String, required: true },
+        schedule: { type: Date, required: false },
         timeJob: { type: Number, default: 0 },
         timeJourney: { type: Number, default: 0 },
         observation: { type: String, required: false },

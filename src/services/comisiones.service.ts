@@ -8,11 +8,13 @@ import type { ParsedQs } from 'qs'
 import { ParseParamsToObject } from '../func/ObjectKeys'
 import UserServices from './user.service'
 import type { ReqUser } from '../interfaces/User'
+import { io } from '../app'
 
 //@ts-ignore
 const servicesExternos = new NotificationServices(Notificaciones, User)
 //@ts-ignore
 const servicesExternoUser = new UserServices(User)
+
 class ComisionesService {
     public ComisionesModel: Model<ComisionesInterface>
     constructor(ComisionesModel: Model<ComisionesInterface>) {
@@ -30,7 +32,7 @@ class ComisionesService {
                 servicesExternos.notificationComisionUser(
                     //@ts-ignore
                     fcmTokens,
-                    'Redes.InFo',
+                    'SistemasRedes.InFo',
                     description,
                 )
                 const newNotification = {
@@ -40,7 +42,7 @@ class ComisionesService {
                     createdAt: new Date(),
                 }
 
-                for (const user of users) {
+                const promises = users.map(async (user) => {
                     const notification =
                         await servicesExternos.createNotification(
                             newNotification,
@@ -48,8 +50,11 @@ class ComisionesService {
                     const notificationId = notification._id
                     user?.notification?.push(notificationId)
                     await user.save()
-                }
+                })
+                await Promise.all(promises)
             }
+            io.emit('nuevaComision', newComision)
+
             return newComision
         } catch (error) {
             throw new Error(
@@ -57,18 +62,34 @@ class ComisionesService {
             )
         }
     }
+
+    async getComisionesEnprogreso(userId: string) {
+        try {
+            const comisionesEnprogreso = await this.ComisionesModel.find({
+                groupJob: { $in: [userId] },
+                process: 'En progreso',
+            })
+            return comisionesEnprogreso
+        } catch (_error) {
+            throw new Error(
+                'El usuario no existe o no tiene comisiones en progreso',
+            )
+        }
+    }
+
     async update(
         data: ComisionesInterface,
         params: ParamsDictionary,
         user: ReqUser,
     ) {
+        console.log('data', data)
         try {
             const comision = await this.ComisionesModel.findByIdAndUpdate(
                 { _id: params.id },
                 data,
                 { new: true },
             )
-            if (data.process !== 'no asignada') {
+            if (data.process === 'Terminada') {
                 const admins = await servicesExternoUser.getAllAdmins()
                 const fcmTokens = admins.map((admin) => admin.tokenFCM)
                 servicesExternos.notificationComisionUser(
@@ -77,6 +98,7 @@ class ComisionesService {
                     `La comision ${comision?.name} ha cambiado de estado por el usuario ${user.email}, ahora el estado de la comisión se encuentra ${comision?.process}`,
                 )
             }
+            io.emit('comisionActualizada', comision)
             return comision
         } catch (error) {
             throw new Error(
@@ -94,11 +116,55 @@ class ComisionesService {
         }
     }
 
-    async getAll(params?: ParsedQs) {
+    async getAll(params?: ParsedQs, user?: ReqUser) {
         const { filter } = ParseParamsToObject(params as ParsedQs)
+        const page = filter.page ? Number.parseInt(filter.page.toString()) : 1
+        const pagination = {
+            limit: 22,
+            page: page,
+        }
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const queryFilter: any = {}
+
+        if (filter.process) {
+            queryFilter.process = filter.process
+        }
+
+        if (filter.type) {
+            queryFilter.type = filter.type
+        }
+
+        if (filter.name) {
+            queryFilter.name = { $regex: filter.name, $options: 'i' }
+        }
+
         try {
-            const comisiones = await this.ComisionesModel.find(filter)
-            return comisiones
+            const totalDocuments =
+                await this.ComisionesModel.countDocuments(queryFilter)
+            const comisionesEnprogreso = await this.ComisionesModel.find({
+                groupJob: { $in: [user] },
+                process: 'En progreso',
+            }).populate({
+                path: 'groupJob',
+                select: 'email photo _id name',
+            })
+
+            const comisiones = await this.ComisionesModel.find(queryFilter)
+                .skip((pagination.page - 1) * pagination.limit)
+                .limit(pagination.limit)
+                .populate({
+                    path: 'groupJob',
+                    select: 'email photo _id name',
+                })
+                .sort({ createdAt: -1 })
+
+            const totalPages = Math.ceil(totalDocuments / pagination.limit)
+            return {
+                comisiones,
+                totalDocuments: totalDocuments,
+                totalPages,
+                comisionesEnprogreso,
+            }
         } catch (error) {
             throw new Error(
                 `Ha ocurrido un error al obtener las comisiones, intente nuevamente, ${error}`,
@@ -123,7 +189,7 @@ class ComisionesService {
                 }
                 //@ts-ignore
                 comisionDB.groupJob.push(comision.groupJob)
-                comisionDB.process = 'en proceso'
+                comisionDB.process = 'En progreso'
                 await comisionDB.save()
                 return comisionDB
             }
@@ -148,6 +214,7 @@ class ComisionesService {
                     },
                     { new: true },
                 )
+            io.emit('comisionAplicada', comisionAplicada)
             return comisionAplicada
         } catch (_error) {
             console.log(_error)

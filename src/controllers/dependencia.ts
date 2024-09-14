@@ -4,6 +4,7 @@ import DependenciaService from '../services/dependencia.service'
 import { response } from '../res/Response'
 import type CustomError from '../interfaces/CustomError'
 
+//@ts-ignore
 const service = new DependenciaService(Dependencias)
 const dependenciaController = {
     async create(req: Request, res: Response) {
@@ -16,13 +17,29 @@ const dependenciaController = {
     },
     async update(req: Request, res: Response) {
         try {
-            await service.update(req.body, req.params)
-            response.isOk(res, 200, 'Dependencia actualizada correctamente')
+            const dependencia = await service.update(req.body, req.params)
+            response.isOk(res, 200, 'Dependencia actualizada correctamente', {
+                dependencia,
+            })
         } catch (error) {
             response.isError(res, 500, error as CustomError, 'dependencia')
         }
     },
     async getAllDependencias(req: Request, res: Response) {
+        try {
+            const params = req.query
+            const dependencias =
+                await service.getAllDependenciasQuerysFilters(params)
+            //@ts-ignore
+            return res.status(200).json({
+                dependencias: dependencias.dependencias,
+                totalPages: dependencias.totalPages,
+            })
+        } catch (error) {
+            response.isError(res, 500, error as CustomError, 'dependencia')
+        }
+    },
+    async getAllDependenciasMaps(req: Request, res: Response) {
         try {
             const params = req.query
             const dependencias = await service.getAllDependencias(params)

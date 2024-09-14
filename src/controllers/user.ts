@@ -3,6 +3,7 @@ import User from '../models/user'
 import type { Request, Response } from 'express'
 import { response } from '../res/Response'
 import type CustomError from '../interfaces/CustomError'
+import { sign } from 'node:crypto'
 
 //@ts-ignore
 const services = new UserServices(User)
@@ -13,7 +14,7 @@ export const userController = {
             await services.createUser(req.body)
             response.isOk(res, 201, 'Usuario creado correctamente')
         } catch (error) {
-            response.isError(res, 500, error as CustomError, 'user')
+            response.isError(res, 400, error as CustomError, 'user')
         }
     },
     async updateUser(req: Request, res: Response) {
@@ -49,7 +50,7 @@ export const userController = {
             const user = await services.signIn(req.body)
             response.isOk(res, 200, 'Usuario logueado correctamente', user)
         } catch (error) {
-            response.isError(res, 500, error as CustomError, 'user')
+            response.isError(res, 400, error as CustomError, 'user')
         }
     },
     async signInToken(req: Request, res: Response) {
@@ -72,7 +73,7 @@ export const userController = {
                 users,
             })
         } catch (error) {
-            response.isError(res, 500, error as CustomError, 'user')
+            response.isError(res, 400, error as CustomError, 'user')
         }
     },
     async signOut(req: Request, res: Response) {
@@ -81,15 +82,58 @@ export const userController = {
             await services.signOut(req.user)
             response.isOk(res, 200, 'Usuario desconectado correctamente')
         } catch (error) {
-            response.isError(res, 500, error as CustomError, 'user')
+            response.isError(res, 400, error as CustomError, 'user')
         }
     },
     async updateFCMToken(req: Request, _res: Response) {
         try {
-            console.log(req.body.token)
             await services.updateFCMToken(req.params, req.body.token)
         } catch (error) {
             console.log(error)
+        }
+    },
+    async authGoogle(req: Request, res: Response) {
+        try {
+            console.log(req.body)
+            const { idToken, tokenFCM } = req.body
+            const user = await services.authGoogle(idToken, tokenFCM)
+            response.isOk(res, 200, 'Usuario logueado correctamente', user)
+        } catch (error) {
+            response.isError(res, 400, error as CustomError, 'user')
+        }
+    },
+    async verifyCode(req: Request, res: Response) {
+        try {
+            const { email, verifyCode } = req.body
+            const user = await services.verfyCode(email, verifyCode)
+            response.isOk(res, 200, 'Código procesado correctamente', user)
+        } catch (error) {
+            response.isError(res, 400, error as CustomError, 'user')
+        }
+    },
+    async getNotifications(req: Request, res: Response) {
+        try {
+            const notifications = await services.getNotifications(req.params)
+            response.isOk(
+                res,
+                200,
+                'Notificaciones recuperadas correctamente',
+                {
+                    notifications,
+                },
+            )
+        } catch (error) {
+            response.isError(res, 400, error as CustomError, 'user')
+        }
+    },
+    async changePassword(req: Request, res: Response) {
+        try {
+            const { email, password } = req.body
+            await services.changePassword(email, password)
+            response.isOk(res, 200, 'Contraseña cambiada correctamente')
+        } catch (error) {
+            console.log(error)
+            response.isError(res, 400, error as CustomError, 'user')
         }
     },
 }

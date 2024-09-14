@@ -3,6 +3,7 @@ import Comisiones from '../models/comisiones'
 import ComisionesService from '../services/comisiones.service'
 import { response } from '../res/Response'
 import type CustomError from '../interfaces/CustomError'
+import type UserInterface from '../interfaces/User'
 
 //@ts-ignore
 const services = new ComisionesService(Comisiones)
@@ -13,11 +14,13 @@ const comisionesController = {
             await services.create(req.body)
             response.isOk(res, 201, 'Comisión creada correctamente')
         } catch (error) {
+            console.log(error)
             response.isError(res, 500, error as CustomError, 'comision')
         }
     },
 
     async updateComision(req: Request, res: Response) {
+        console.log(req.body)
         try {
             const comision = await services.update(
                 req.body,
@@ -44,14 +47,11 @@ const comisionesController = {
     async getAllComisiones(req: Request, res: Response) {
         try {
             const params = req.query
-            const comisiones = await services.getAll(params)
-            response.isOk(
-                res,
-                200,
-                'Comisiones obtenidas correctamente',
-                {},
+            const user = req.user as UserInterface
+            const comisiones = await services.getAll(params, user)
+            response.isOk(res, 200, 'Comisiones obtenidas correctamente', {
                 comisiones,
-            )
+            })
         } catch (error) {
             console.log(error)
             response.isError(res, 500, error as CustomError, 'comision')
@@ -75,7 +75,7 @@ const comisionesController = {
             //@ts-ignore
             const { _id } = req.user
             const { id } = req.params
-            console.log('id en el controlador', id)
+
             //@ts-ignore
             const comision = await services.aplicarComision(_id, id)
             response.isOk(res, 200, 'Comisión aplicada correctamente', {
@@ -100,6 +100,23 @@ const comisionesController = {
             })
         } catch (error) {
             response.isError(res, 500, error as CustomError, 'comision')
+        }
+    },
+    async getComisionesByUser(req: Request, res: Response) {
+        try {
+            //@ts-ignore
+            const { _id } = req.user
+            const comisiones = await services.getComisionesEnprogreso(_id)
+            response.isOk(res, 200, 'Comisiones obtenidas correctamente', {
+                comisiones,
+            })
+        } catch (error) {
+            response.isError(
+                res,
+                500,
+                error as CustomError,
+                'comisionesEnprogreso',
+            )
         }
     },
 }

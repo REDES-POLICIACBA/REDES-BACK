@@ -1,6 +1,7 @@
 import passport from 'passport'
 import passportJwt from 'passport-jwt'
 import User from '../models/user'
+import 'dotenv/config'
 
 passport.use(
     new passportJwt.Strategy(

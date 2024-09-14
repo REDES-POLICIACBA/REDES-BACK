@@ -24,7 +24,6 @@ const notificationController = {
 
     async notificationIsRead(req: Request, res: Response) {
         try {
-            console.log(req)
             const notification = await service.updateNotification(req.params)
             response.isOk(res, 200, 'Notificación actualizada correctamente', {
                 notification,

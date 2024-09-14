@@ -1,4 +1,4 @@
-import admin from '../firebase/admin'
+import Expo from 'expo-server-sdk'
 import type Notificaciones from '../interfaces/Notificaciones'
 import type { Model } from 'mongoose'
 import type UserInterface from '../interfaces/User'
@@ -21,27 +21,18 @@ class NotificationServices {
         title: string,
         body: string,
     ) {
+        const expo = new Expo()
+        console.log(tokens)
         try {
-            console.log('tokens', tokens)
-            const message = {
-                notification: {
+            expo.sendPushNotificationsAsync(
+                tokens.map((token) => ({
+                    to: token,
+                    sound: 'default',
                     title: title,
                     body: body,
-                },
-                tokens: tokens,
-            }
-            const response = await admin.messaging().sendMulticast(message)
-
-            console.log('Successfully sent messages:', response)
-
-            response.responses.forEach((resp, idx) => {
-                if (!resp.success) {
-                    console.error(
-                        `Error sending message to token ${tokens[idx]}:`,
-                        resp.error,
-                    )
-                }
-            })
+                    data: { body: body },
+                })),
+            )
         } catch (error) {
             console.error('Error sending messages:', error)
             throw error
@@ -59,7 +50,6 @@ class NotificationServices {
             )
         }
     }
-
     async updateNotification(params: ParamsDictionary) {
         try {
             const { id } = params

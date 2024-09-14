@@ -7,9 +7,10 @@ import type { ParamsDictionary } from 'express-serve-static-core'
 import EmailServices from './email.service'
 import sendEmailConfirmation from '../html/senEmailConfirmationAccount'
 import sendResetPassword from '../html/sendResetPassword'
+import { OAuth2Client } from 'google-auth-library'
+import 'dotenv/config'
 
 const emailServices = new EmailServices()
-
 class UserServices {
     public UserModel: Model<UserInterface>
     constructor(UserModel: Model<UserInterface>) {
@@ -52,7 +53,7 @@ class UserServices {
             ).populate('notification', '-updatedAt -__v')
             if (userFind !== null) {
                 const token = jwt.sign({ id: userFind._id }, SECRET, {
-                    expiresIn: '1h',
+                    expiresIn: '5m',
                 })
                 return {
                     token,
@@ -61,7 +62,7 @@ class UserServices {
                         email: userFind.email,
                         role: userFind.role,
                         photo: userFind.photo,
-                        id: userFind._id,
+                        _id: userFind._id,
                         notifications: userFind.notification,
                         latestConnection: userFind.latestConnection,
                     },
@@ -78,7 +79,7 @@ class UserServices {
                 { id: user._id },
                 <string>process.env.SECRET,
                 {
-                    expiresIn: 60 * 60 * 2,
+                    expiresIn: '5m',
                 },
             )
             //@ts-ignore
@@ -150,7 +151,7 @@ class UserServices {
             userFind.verifiedCode = newVerifyCode
             await userFind.save()
             const data = {
-                html: sendResetPassword(newVerifyCode, user.name),
+                html: sendResetPassword(newVerifyCode, userFind.name),
                 email: userFind.email,
                 subject: 'Recuperación de contraseña',
                 text: 'Recupera tu contraseña',
@@ -167,11 +168,34 @@ class UserServices {
             )
         }
     }
+    async verfyCode(email: string, verifyCode: string) {
+        console.log(email, verifyCode)
+        try {
+            const user = await this.UserModel.findOne<UserInterface>({ email })
+            if (user !== null) {
+                if (verifyCode === user.verifiedCode) {
+                    return {
+                        user: {
+                            name: user.name,
+                            email: user.email,
+                            photo: user.photo,
+                        },
+                    }
+                }
+                throw new Error('Error al encontrar el Usuario ')
+            }
+        } catch (_error) {
+            throw new Error(
+                'el código que has ingresado no es el correcto, verifica el código nuevamente',
+            )
+        }
+    }
+
     async getAllInstaladores() {
         try {
-            const users = await this.UserModel.find({ role: 1 }).select(
-                '_id name email',
-            )
+            const users = await this.UserModel.find({
+                role: { $in: [0, 1, 2] },
+            }).select('_id name email photo role')
             return users
         } catch (error) {
             throw new Error(
@@ -217,6 +241,80 @@ class UserServices {
             )
         }
     }
-}
 
+    async authGoogle(idToken: string, tokenFCM: string) {
+        try {
+            const SECRET = process.env.SECRET as string
+            const clientID = process.env.GOOGLE_CLIENT_ID as string
+            const client = new OAuth2Client(clientID)
+
+            const ticket = await client.verifyIdToken({
+                idToken,
+                audience: clientID,
+            })
+            const payload = ticket.getPayload()
+            if (!payload) {
+                throw new Error('No se pudo obtener el payload del token.')
+            }
+
+            const email = payload.email
+            const pass = payload.sub
+            if (!email) {
+                throw new Error('El token no contiene un email válido.')
+            }
+            let user = await this.UserModel.findOne({ email })
+
+            if (user) {
+                user.isOnline = true
+                user.tokenFCM = tokenFCM
+                await user.save()
+            } else {
+                user = await this.UserModel.create({
+                    email,
+                    name: payload.name,
+                    photo: payload.picture,
+                    role: 0,
+                    isOnline: true,
+                    tokenFCM,
+                    password: bcryptjs.hashSync(pass, 10),
+                    verifiedCode: crypto.randomBytes(20).toString('hex'),
+                })
+                await user.save()
+            }
+            const token = jwt.sign({ id: user._id }, SECRET, {
+                expiresIn: '5m',
+            })
+            return {
+                token,
+                user: {
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    photo: user.photo,
+                    _id: user._id,
+                    isOnline: user.isOnline,
+                    notifications: user.notification,
+                    latestConnection: user.latestConnection,
+                },
+            }
+        } catch (error) {
+            console.error('Error en la autenticación de Google:', error)
+            throw new Error('Error en la autenticación de Google.')
+        }
+    }
+    async getNotifications(params: ParamsDictionary) {
+        try {
+            const user = await this.UserModel.findOne({
+                _id: params.id,
+            }).populate('notification', '-updatedAt -__v')
+            //@ts-ignore
+            return user.notification
+        } catch (error) {
+            console.log(error)
+            throw new Error(
+                'Ha ocurrido un error al obtener las notificaciones',
+            )
+        }
+    }
+}
 export default UserServices

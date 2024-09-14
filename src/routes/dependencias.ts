@@ -17,5 +17,14 @@ router.put(
     dependenciaController.update,
 )
 
-router.get('/', dependenciaController.getAllDependencias)
+router.get(
+    '/',
+    passport.authenticate('jwt', { session: false }),
+    dependenciaController.getAllDependencias,
+)
+router.get(
+    '/maps',
+    passport.authenticate('jwt', { session: false }),
+    dependenciaController.getAllDependenciasMaps,
+)
 export default router

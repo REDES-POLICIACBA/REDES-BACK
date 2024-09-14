@@ -6,11 +6,14 @@ import passport from '../middlewares/passport'
 import { isInstalador } from '../middlewares/comision/isInstalador'
 import { isApplyComision } from '../middlewares/comision/isApplyComision'
 import { isProperty } from '../middlewares/comision/isProperty'
+import { alreadyUsers } from '../middlewares/comision/alreadyUsers'
+
 const router = Router()
 
 router.post(
     '/',
     passport.authenticate('jwt', { session: false }),
+    alreadyUsers,
     isAdmin,
     comisionesController.createComision,
 )
@@ -35,6 +38,13 @@ router.get(
     passport.authenticate('jwt', { session: false }),
     isInstalador,
     comisionesController.getAllComisiones,
+)
+
+router.get(
+    '/enprogreso',
+    passport.authenticate('jwt', { session: false }),
+    isInstalador,
+    comisionesController.getComisionesByUser,
 )
 
 router.post(

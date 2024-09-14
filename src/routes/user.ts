@@ -10,7 +10,11 @@ const router = Router()
 
 router.post('/', accountIsExist, userController.createUser)
 
-router.put('/:id', userController.updateUser)
+router.put(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
+    userController.updateUser,
+)
 
 router.delete(
     '/:id',
@@ -41,13 +45,16 @@ router.post(
     userController.signInToken,
 )
 
+router.post('/google', userController.authGoogle)
+router.post('/verifycode', userController.verifyCode)
+router.post('/changepassword', userController.changePassword)
+
+router.get('/notifications/:id', userController.getNotifications)
 router.get(
     '/instaladores',
     passport.authenticate('jwt', { session: false }),
     isAdmin,
     userController.getAllInstaladores,
 )
-
-router.put('/fcmtoken', userController.updateFCMToken)
 
 export default router
