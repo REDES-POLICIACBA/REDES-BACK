@@ -50,6 +50,7 @@ export const userController = {
             const user = await services.signIn(req.body)
             response.isOk(res, 200, 'Usuario logueado correctamente', user)
         } catch (error) {
+            console.log(error)
             response.isError(res, 400, error as CustomError, 'user')
         }
     },
@@ -99,6 +100,8 @@ export const userController = {
             const user = await services.authGoogle(idToken, tokenFCM)
             response.isOk(res, 200, 'Usuario logueado correctamente', user)
         } catch (error) {
+            console.log(error)
+
             response.isError(res, 400, error as CustomError, 'user')
         }
     },

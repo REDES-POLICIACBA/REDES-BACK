@@ -43,6 +43,7 @@ class UserServices {
     }
 
     async signIn(user: UserInterface) {
+        console.log('datos del usuarios en el servicio', user)
         const { email, tokenFCM } = user
         const SECRET = <string>process.env.SECRET
         try {
