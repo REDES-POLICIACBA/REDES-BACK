@@ -43,7 +43,6 @@ class UserServices {
     }
 
     async signIn(user: UserInterface) {
-        console.log('datos del usuarios en el servicio', user)
         const { email, tokenFCM } = user
         const SECRET = <string>process.env.SECRET
         try {
@@ -54,7 +53,7 @@ class UserServices {
             ).populate('notification', '-updatedAt -__v')
             if (userFind !== null) {
                 const token = jwt.sign({ id: userFind._id }, SECRET, {
-                    expiresIn: '5m',
+                    expiresIn: '1h',
                 })
                 return {
                     token,
@@ -80,7 +79,7 @@ class UserServices {
                 { id: user._id },
                 <string>process.env.SECRET,
                 {
-                    expiresIn: '5m',
+                    expiresIn: '1h',
                 },
             )
             //@ts-ignore
@@ -283,7 +282,7 @@ class UserServices {
                 await user.save()
             }
             const token = jwt.sign({ id: user._id }, SECRET, {
-                expiresIn: '5m',
+                expiresIn: '1h',
             })
             return {
                 token,

@@ -1,4 +1,4 @@
 export default interface CustomError {
-  message: string
-  path?: string
+    message: string
+    path?: string
 }

@@ -1,10 +1,10 @@
 interface Props {
-  userName: string
-  verifiedCode: string
+    userName: string
+    verifiedCode: string
 }
 
 export default function sendPartesdeTrabajo({ userName, verifiedCode }: Props) {
-  return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

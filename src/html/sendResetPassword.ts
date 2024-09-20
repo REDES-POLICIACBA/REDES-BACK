@@ -1,8 +1,8 @@
 export default function sendResetPassword(
-  newVerifyCode: string,
-  userName: string,
+    newVerifyCode: string,
+    userName: string,
 ) {
-  return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">

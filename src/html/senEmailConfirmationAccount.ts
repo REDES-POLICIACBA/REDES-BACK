@@ -1,5 +1,5 @@
 export default function sendEmailConfirmation(userName: string) {
-  return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
