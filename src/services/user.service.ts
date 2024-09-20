@@ -168,6 +168,7 @@ class UserServices {
             )
         }
     }
+
     async verfyCode(email: string, verifyCode: string) {
         console.log(email, verifyCode)
         try {
@@ -215,6 +216,7 @@ class UserServices {
             )
         }
     }
+
     async signOut(user: UserInterface) {
         try {
             const userFind = await this.UserModel.findOneAndUpdate(
@@ -227,6 +229,7 @@ class UserServices {
             throw new Error(`Ha ocurrido un error al cerrar sesión, ${error}`)
         }
     }
+
     async updateFCMToken(params: ParamsDictionary, tokenFCM: string) {
         try {
             const userUpdate = await this.UserModel.findOneAndUpdate(
@@ -302,6 +305,7 @@ class UserServices {
             throw new Error('Error en la autenticación de Google.')
         }
     }
+
     async getNotifications(params: ParamsDictionary) {
         try {
             const user = await this.UserModel.findOne({
@@ -309,11 +313,26 @@ class UserServices {
             }).populate('notification', '-updatedAt -__v')
             //@ts-ignore
             return user.notification
-        } catch (error) {
-            console.log(error)
+        } catch (_error) {
             throw new Error(
                 'Ha ocurrido un error al obtener las notificaciones',
             )
+        }
+    }
+
+    async deleteNotification(user: UserInterface, params: ParamsDictionary) {
+        try {
+            const userFind = await this.UserModel.findByIdAndUpdate(
+                user._id,
+                { $pull: { notification: params._id } },
+                { new: true },
+            )
+            if (!userFind) {
+                throw new Error('Usuario no encontrado')
+            }
+            return userFind
+        } catch (_error) {
+            throw new Error('Error al eliminar la notificación')
         }
     }
 }

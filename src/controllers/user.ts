@@ -4,6 +4,7 @@ import type { Request, Response } from 'express'
 import { response } from '../res/Response'
 import type CustomError from '../interfaces/CustomError'
 import { sign } from 'node:crypto'
+import type UserInterface from '../interfaces/User'
 
 //@ts-ignore
 const services = new UserServices(User)
@@ -136,6 +137,17 @@ export const userController = {
             response.isOk(res, 200, 'Contraseña cambiada correctamente')
         } catch (error) {
             console.log(error)
+            response.isError(res, 400, error as CustomError, 'user')
+        }
+    },
+    async deleteNofitication(req: Request, res: Response) {
+        try {
+            await services.deleteNotification(
+                req.user as UserInterface,
+                req.params,
+            )
+            response.isOk(res, 200, 'Notificación eliminada correctamente')
+        } catch (error) {
             response.isError(res, 400, error as CustomError, 'user')
         }
     },
