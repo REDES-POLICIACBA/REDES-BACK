@@ -1,5 +1,17 @@
 import mongoose, { Types } from 'mongoose'
 
+const linkTypeValid = [
+    'ADSL',
+    'HFC',
+    'EPEC',
+    'COOPERATIVA',
+    'MPLS',
+    'COLSECOR',
+    'COPERATIVA ITC',
+    'COOP GRAL DEHEZA',
+    'CONECTIVIDAD CORDOBA',
+]
+
 const schema = new mongoose.Schema(
     {
         name: { type: String, required: true },
@@ -8,14 +20,14 @@ const schema = new mongoose.Schema(
             latitude: { type: String, required: true },
             longitude: { type: String, required: true },
         },
-        linkType: { type: String, required: true },
+        linkType: { type: String, enum: linkTypeValid, required: false },
         firewall: { type: String, required: true },
         ipInside: { type: String, required: true },
         ipOutside: { type: String, required: true },
         referencia: { type: String },
         notas: { type: String },
         type: { type: String, enum: ['capital', 'interior'], required: true },
-        lastEdit: { type: Types.ObjectId, ref: 'users', required: true },
+        lastEdit: { type: Types.ObjectId, ref: 'users', required: false },
         proveedores: {},
     },
     { timestamps: true },

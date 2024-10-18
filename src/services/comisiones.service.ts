@@ -118,6 +118,7 @@ class ComisionesService {
 
     async getAll(params?: ParsedQs, user?: ReqUser) {
         const { filter } = ParseParamsToObject(params as ParsedQs)
+
         const page = filter.page ? Number.parseInt(filter.page.toString()) : 1
         const pagination = {
             limit: 22,
@@ -136,6 +137,19 @@ class ComisionesService {
 
         if (filter.name) {
             queryFilter.name = { $regex: filter.name, $options: 'i' }
+        }
+        if (filter.date) {
+            //@ts-ignore
+            const startDate = new Date(filter.date)
+            startDate.setUTCHours(0, 0, 0, 0)
+
+            const endDate = new Date(startDate)
+            endDate.setUTCHours(23, 59, 59, 999)
+
+            queryFilter.date = {
+                $gte: startDate,
+                $lte: endDate,
+            }
         }
 
         try {

@@ -9,10 +9,13 @@ const service = new DependenciaService(Dependencias)
 const dependenciaController = {
     async create(req: Request, res: Response) {
         try {
-            await service.create(req.body)
-            response.isOk(res, 201, 'Dependencia creada correctamente')
+            const dependencia = await service.create(req.body)
+            console.log(dependencia)
+            response.isOk(res, 201, 'Dependencia creada correctamente', {
+                dependencia,
+            })
         } catch (error) {
-            response.isError(res, 500, error as CustomError, 'dependencia')
+            response.isError(res, 400, error as CustomError, 'dependencia')
         }
     },
     async update(req: Request, res: Response) {

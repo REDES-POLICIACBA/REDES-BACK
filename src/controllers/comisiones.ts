@@ -20,7 +20,7 @@ const comisionesController = {
     },
 
     async updateComision(req: Request, res: Response) {
-        console.log(req.body)
+        console.log('clg en el update del service', req.body)
         try {
             const comision = await services.update(
                 req.body,

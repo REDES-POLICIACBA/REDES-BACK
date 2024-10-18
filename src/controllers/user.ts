@@ -96,9 +96,9 @@ export const userController = {
     },
     async authGoogle(req: Request, res: Response) {
         try {
-            console.log(req.body)
             const { idToken, tokenFCM } = req.body
             const user = await services.authGoogle(idToken, tokenFCM)
+            console.log(user)
             response.isOk(res, 200, 'Usuario logueado correctamente', user)
         } catch (error) {
             console.log(error)
@@ -137,17 +137,6 @@ export const userController = {
             response.isOk(res, 200, 'Contraseña cambiada correctamente')
         } catch (error) {
             console.log(error)
-            response.isError(res, 400, error as CustomError, 'user')
-        }
-    },
-    async deleteNofitication(req: Request, res: Response) {
-        try {
-            await services.deleteNotification(
-                req.user as UserInterface,
-                req.params,
-            )
-            response.isOk(res, 200, 'Notificación eliminada correctamente')
-        } catch (error) {
             response.isError(res, 400, error as CustomError, 'user')
         }
     },

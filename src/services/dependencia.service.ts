@@ -12,10 +12,23 @@ class DependenciaService {
     }
     async create(dependenciaData: Dependencia) {
         try {
+            console.log(dependenciaData)
             const dependencia =
                 await this.DependenciaModel.create(dependenciaData)
             return dependencia
         } catch (error) {
+            //@ts-ignore
+            if (error.errors.linkType) {
+                throw new Error(
+                    'El campo tipo de vínculo no tiene un nombre valido',
+                )
+            }
+            //@ts-ignore
+            if (error.errors.type) {
+                throw new Error(
+                    'El campo capital/interior no tiene un nombre valido',
+                )
+            }
             throw new Error(
                 `Ha ocurrido un error al intentar crear la dependencia: ${error}`,
             )
@@ -61,12 +74,21 @@ class DependenciaService {
 
         if (filter.linkType) {
             //@ts-ignore
-            query.linkType = { $in: filter.linkType.split(';') }
+            const linkTypes = filter.linkType.split(';')
+            //@ts-ignore
+            query.linkType = { $in: linkTypes.map((fw) => new RegExp(fw, 'i')) }
         }
 
         if (filter.firewall) {
             //@ts-ignore
-            query.firewall = { $in: filter.firewall.split(';') }
+            const firewalls = filter.firewall.split(';')
+            //@ts-ignore
+            query.firewall = { $in: firewalls.map((fw) => new RegExp(fw, 'i')) }
+        }
+
+        if (filter.name) {
+            //@ts-ignore
+            query.name = { $regex: new RegExp(filter.name, 'i') }
         }
 
         if (filter.ipAddress) {
@@ -83,11 +105,13 @@ class DependenciaService {
             //@ts-ignore
             query._id = filter._id
         }
-        console.log(filter)
         try {
             const dependencias = await this.DependenciaModel.find(query)
                 .skip((pagination.page - 1) * pagination.limit)
                 .limit(pagination.limit)
+                .sort({
+                    createdAt: -1,
+                })
 
             const totalDocuments =
                 await this.DependenciaModel.countDocuments(query)

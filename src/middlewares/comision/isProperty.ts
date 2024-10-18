@@ -13,7 +13,7 @@ export async function isProperty(
             //@ts-ignore
             comision?.groupJob.includes(req.user?._id) ||
             //@ts-ignore
-            req.user?.role === 'admin'
+            req.user?.role === 3
         ) {
             return next()
         }

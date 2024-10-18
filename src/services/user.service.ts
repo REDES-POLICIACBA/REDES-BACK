@@ -170,7 +170,6 @@ class UserServices {
     }
 
     async verfyCode(email: string, verifyCode: string) {
-        console.log(email, verifyCode)
         try {
             const user = await this.UserModel.findOne<UserInterface>({ email })
             if (user !== null) {
@@ -255,6 +254,7 @@ class UserServices {
                 idToken,
                 audience: clientID,
             })
+            console.log(ticket)
             const payload = ticket.getPayload()
             if (!payload) {
                 throw new Error('No se pudo obtener el payload del token.')
@@ -265,7 +265,10 @@ class UserServices {
             if (!email) {
                 throw new Error('El token no contiene un email válido.')
             }
-            let user = await this.UserModel.findOne({ email })
+            let user = await this.UserModel.findOne({ email }).populate(
+                'notification',
+                '-updatedAt -__v',
+            )
 
             if (user) {
                 user.isOnline = true
@@ -300,8 +303,8 @@ class UserServices {
                     latestConnection: user.latestConnection,
                 },
             }
-        } catch (error) {
-            console.error('Error en la autenticación de Google:', error)
+        } catch (_error) {
+            console.log(_error)
             throw new Error('Error en la autenticación de Google.')
         }
     }
@@ -317,22 +320,6 @@ class UserServices {
             throw new Error(
                 'Ha ocurrido un error al obtener las notificaciones',
             )
-        }
-    }
-
-    async deleteNotification(user: UserInterface, params: ParamsDictionary) {
-        try {
-            const userFind = await this.UserModel.findByIdAndUpdate(
-                user._id,
-                { $pull: { notification: params._id } },
-                { new: true },
-            )
-            if (!userFind) {
-                throw new Error('Usuario no encontrado')
-            }
-            return userFind
-        } catch (_error) {
-            throw new Error('Error al eliminar la notificación')
         }
     }
 }

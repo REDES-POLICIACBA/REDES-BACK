@@ -9,19 +9,6 @@ import User from '../models/user'
 const service = new NotificationServices(Notificaciones, User)
 
 const notificationController = {
-    /* async notificationComision(_req: Request, res: Response) {
-  try {
-    await service.sendNotification(
-      'token',
-      'Comisión',
-      'Tienes una nueva comisión',
-    )
-    response.isOk(res, 200, 'Notificación enviada correctamente')
-  } catch (error) {
-    response.isError(res, 500, error as CustomError, 'notification')
-  }
-}, */
-
     async notificationIsRead(req: Request, res: Response) {
         try {
             const notification = await service.updateNotification(req.params)
@@ -30,6 +17,21 @@ const notificationController = {
             })
         } catch (error) {
             response.isError(res, 500, error as CustomError, 'notification')
+        }
+    },
+    async deleteNotification(req: Request, res: Response) {
+        try {
+            const notificationDelete = await service.deleteNotification(
+                //@ts-ignore
+                req.user,
+                req.params,
+            )
+            console.log('aca', notificationDelete)
+            response.isOk(res, 200, 'Notificación eliminada correctamente', {
+                notification: notificationDelete,
+            })
+        } catch (error) {
+            response.isError(res, 400, error as CustomError, 'notification')
         }
     },
 }
