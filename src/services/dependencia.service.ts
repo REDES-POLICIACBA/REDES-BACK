@@ -10,6 +10,7 @@ class DependenciaService {
     constructor(DependenciaModel: Model<Dependencia>) {
         this.DependenciaModel = DependenciaModel
     }
+
     async create(dependenciaData: Dependencia) {
         try {
             console.log(dependenciaData)
@@ -34,6 +35,7 @@ class DependenciaService {
             )
         }
     }
+
     async update(dependencia: Dependencia, params: ParamsDictionary) {
         try {
             const dependenciaUpdated =
@@ -50,6 +52,7 @@ class DependenciaService {
             )
         }
     }
+
     async getAllDependencias(params: ParsedQs) {
         const { filter } = ParseParamsToObject(params)
         try {

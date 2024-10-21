@@ -107,6 +107,8 @@ class UserServices {
                 user,
                 { new: true },
             )
+                .lean()
+                .select('_id name email role photo')
             return userUpdate
         } catch (error) {
             throw new Error(

@@ -127,6 +127,15 @@ class ComisionesService {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const queryFilter: any = {}
 
+        const now = new Date()
+        const twoMonthsAgo = new Date()
+        twoMonthsAgo.setMonth(now.getMonth() - 2)
+
+        queryFilter.createdAt = {
+            $gte: twoMonthsAgo,
+            $lte: now,
+        }
+
         if (filter.process) {
             queryFilter.process = filter.process
         }
