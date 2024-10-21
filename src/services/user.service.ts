@@ -44,6 +44,8 @@ class UserServices {
 
     async signIn(user: UserInterface) {
         const { email, tokenFCM } = user
+        console.log('email:', email)
+        console.log('tokenFCM:', tokenFCM)
         const SECRET = <string>process.env.SECRET
         try {
             const userFind = await this.UserModel.findOneAndUpdate(
