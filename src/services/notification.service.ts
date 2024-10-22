@@ -23,17 +23,23 @@ class NotificationServices {
     ) {
         const expo = new Expo()
         console.log(tokens)
+
         const validTokens = tokens.filter(
-            (token) => token !== null && token !== '',
+            (token) => token && Expo.isExpoPushToken(token),
         )
+
+        if (validTokens.length === 0) {
+            console.warn('No valid Expo push tokens provided.')
+            return
+        }
         try {
-            expo.sendPushNotificationsAsync(
+            await expo.sendPushNotificationsAsync(
                 validTokens.map((token) => ({
                     to: token,
                     sound: 'default',
                     title: title,
                     body: body,
-                    data: { body: body },
+                    data: { title: title, body: body },
                 })),
             )
         } catch (error) {
