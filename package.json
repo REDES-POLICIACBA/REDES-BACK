@@ -10,7 +10,8 @@
 		"lint": "npm run format && biome lint ./src --apply --no-errors-on-unmatched",
 		"build": "npm run build:ts",
 		"build:ts": "tsc",
-		"lint-staged": "lint-staged"
+		"lint-staged": "lint-staged",
+		"start": "node ./dist/app.js"
 	},
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
