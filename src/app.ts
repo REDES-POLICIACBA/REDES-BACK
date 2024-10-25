@@ -10,6 +10,8 @@ import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
 
 const app = express()
+app.set('trust proxy', true)
+
 const server = http.createServer(app)
 const io = new SocketServer(server, {
     cors: {
