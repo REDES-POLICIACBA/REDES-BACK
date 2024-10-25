@@ -10,7 +10,6 @@ import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
 
 const app = express()
-app.set('trust proxy', true)
 
 const server = http.createServer(app)
 const io = new SocketServer(server, {
@@ -20,19 +19,10 @@ const io = new SocketServer(server, {
     },
 })
 
-app.use(helmet())
 app.use(cors())
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    message: 'Demasiadas solicitudes, por favor intenta de nuevo más tarde.',
-})
-
-app.use(limiter)
 
 app.use('/', indexRouter)
 
